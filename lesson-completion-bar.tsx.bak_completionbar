@@ -1,0 +1,85 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { loadLessonProgress, markLessonCompleted, unmarkLessonCompleted } from "@/lib/lesson-progress";
+
+export function LessonCompletionBar({
+  slug,
+  title,
+}: {
+  slug: string;
+  title?: string;
+}) {
+  const [completedSlugs, setCompletedSlugs] = useState<string[]>([]);
+
+  useEffect(() => {
+    setCompletedSlugs(loadLessonProgress().completedSlugs);
+  }, []);
+
+  const isCompleted = useMemo(() => completedSlugs.includes(slug), [completedSlugs, slug]);
+
+  function onToggle() {
+    const next = isCompleted ? unmarkLessonCompleted(slug) : markLessonCompleted(slug);
+    setCompletedSlugs(next.completedSlugs);
+  }
+
+  return (
+    <section
+      style={{
+        marginTop: 18,
+        border: "1px solid var(--fe-border)",
+        borderRadius: "var(--fe-radius)",
+        background: "white",
+        padding: 14,
+        boxShadow: "var(--fe-shadow)",
+        display: "flex",
+        gap: 12,
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <div style={{ display: "grid", gap: 6 }}>
+        <div style={{ fontWeight: 900, color: "var(--fe-ink)" }}>
+          {isCompleted ? "Lección completada" : "Marcar progreso"}
+        </div>
+        <div style={{ color: "var(--fe-slate)" }}>
+          {title ? <span><strong style={{ color: "var(--fe-ink)" }}>{title}</strong> · </span> : null}
+          {isCompleted ? "Ya cuenta para tu progreso de la semana." : "Cuando termines, márcala como completada."}
+        </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+        <span
+          style={{
+            fontSize: 12,
+            padding: "6px 10px",
+            borderRadius: 999,
+            border: `1px solid ${isCompleted ? "var(--fe-success)" : "var(--fe-border)"}`,
+            background: isCompleted ? "#DCFCE7" : "white",
+            color: "var(--fe-ink)",
+            fontWeight: 800,
+          }}
+        >
+          {isCompleted ? "Completada" : "Pendiente"}
+        </span>
+
+        <button
+          type="button"
+          onClick={onToggle}
+          style={{
+            padding: "10px 12px",
+            borderRadius: "var(--fe-radius-sm)",
+            background: isCompleted ? "white" : "var(--fe-primary)",
+            color: isCompleted ? "var(--fe-ink)" : "white",
+            border: isCompleted ? "1px solid var(--fe-border)" : "none",
+            cursor: "pointer",
+            fontWeight: 900,
+          }}
+        >
+          {isCompleted ? "Desmarcar" : "Marcar como completada"}
+        </button>
+      </div>
+    </section>
+  );
+}
