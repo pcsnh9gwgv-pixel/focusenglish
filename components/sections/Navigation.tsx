@@ -10,7 +10,7 @@ const navigation = [
   { name: "Cursos Especializados", href: "/cursos-especializados" },
   { name: "Para Trabajar", href: "/trabajo" },
   { name: "Para Viajar", href: "/viajes" },
-  { name: "Para Certificarte", href: "/certificados" },
+  { name: "Preparación de Exámenes", href: "/examenes" },
   { name: "Preguntas", href: "#faq" },
 ];
 

@@ -18,23 +18,23 @@ export function HeroSection() {
           {/* Badge */}
           <div className="mb-8 inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-4 py-1.5 text-sm font-semibold text-violet-700">
             <span className="mr-2">🎯</span>
-            <span>Formación Profesional de Inglés</span>
+            <span>Cursos de Inglés Especializados</span>
           </div>
 
           {/* Headline */}
           <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-5xl lg:text-6xl text-balance">
-            Aprende Inglés{" "}
+            Inglés{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-purple-600">
-              Para Tu Objetivo
+              Focalizado en Tu Objetivo
             </span>
           </h1>
 
           {/* Subheadline */}
           <p className="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto text-balance">
-            Elige tu camino: inglés para <strong className="text-slate-900 font-semibold">trabajar</strong>,
+            Elige tu camino: cursos focalizados para <strong className="text-slate-900 font-semibold">trabajar</strong>,
             <strong className="text-slate-900 font-semibold"> viajar</strong> o 
-            <strong className="text-slate-900 font-semibold"> certificarte</strong>. 
-            Programas personalizados de 90 días con certificación CEFR.
+            <strong className="text-slate-900 font-semibold"> preparar exámenes oficiales</strong>. 
+            Programas personalizados de 90 días.
           </p>
 
           {/* CTAs */}

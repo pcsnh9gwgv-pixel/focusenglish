@@ -16,34 +16,14 @@ export default function CursosEspecializadosPage() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 mb-6">
-                Inglés Especializado para{" "}
+                Cursos de Inglés{" "}
                 <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
-                  Tu Carrera Profesional
+                  Especializados por Sector
                 </span>
               </h1>
               <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-                Cursos diseñados específicamente para los sectores con mayor demanda de inglés en España y Europa
+                Aprende el inglés específico que necesitas para tu sector profesional y objetivos laborales
               </p>
-            </div>
-
-            {/* Stats Bar */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-20">
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <div className="text-3xl font-black text-violet-600 mb-2">40%</div>
-                <div className="text-sm text-slate-600">Ofertas en Marketing requieren inglés</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <div className="text-3xl font-black text-violet-600 mb-2">42%</div>
-                <div className="text-sm text-slate-600">Puestos en Ingeniería exigen idiomas</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <div className="text-3xl font-black text-violet-600 mb-2">45%</div>
-                <div className="text-sm text-slate-600">Vacantes en Administración con inglés</div>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <div className="text-3xl font-black text-violet-600 mb-2">100%</div>
-                <div className="text-sm text-slate-600">Organismos Internacionales lo requieren</div>
-              </div>
             </div>
           </div>
         </section>
@@ -94,7 +74,7 @@ export default function CursosEspecializadosPage() {
                 Cursos para Trabajar en España
               </h2>
               <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-                Basados en datos de InfoJobs y portales de empleo españoles
+                Inglés específico para los sectores profesionales más demandados
               </p>
             </div>
 
@@ -102,12 +82,7 @@ export default function CursosEspecializadosPage() {
               {/* Marketing y Comunicación */}
               <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                 <div className="bg-gradient-to-r from-violet-600 to-purple-600 p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black text-white">Marketing y Comunicación</h3>
-                    <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm font-bold">
-                      40% demanda
-                    </span>
-                  </div>
+                  <h3 className="text-2xl font-black text-white">Marketing y Comunicación</h3>
                 </div>
                 <div className="p-6">
                   <div className="mb-6">
@@ -158,12 +133,7 @@ export default function CursosEspecializadosPage() {
               {/* Ingenieros y Técnicos */}
               <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                 <div className="bg-gradient-to-r from-blue-600 to-cyan-600 p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black text-white">Ingenieros y Técnicos</h3>
-                    <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm font-bold">
-                      41% demanda
-                    </span>
-                  </div>
+                  <h3 className="text-2xl font-black text-white">Ingenieros y Técnicos</h3>
                 </div>
                 <div className="p-6">
                   <div className="mb-6">
@@ -214,12 +184,7 @@ export default function CursosEspecializadosPage() {
               {/* Administración de Empresas */}
               <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                 <div className="bg-gradient-to-r from-emerald-600 to-green-600 p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black text-white">Administración de Empresas</h3>
-                    <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm font-bold">
-                      45% demanda
-                    </span>
-                  </div>
+                  <h3 className="text-2xl font-black text-white">Administración de Empresas</h3>
                 </div>
                 <div className="p-6">
                   <div className="mb-6">
@@ -270,12 +235,7 @@ export default function CursosEspecializadosPage() {
               {/* Legal y Compliance */}
               <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                 <div className="bg-gradient-to-r from-amber-600 to-orange-600 p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black text-white">Legal y Compliance</h3>
-                    <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm font-bold">
-                      40% demanda
-                    </span>
-                  </div>
+                  <h3 className="text-2xl font-black text-white">Legal y Compliance</h3>
                 </div>
                 <div className="p-6">
                   <div className="mb-6">
@@ -326,12 +286,7 @@ export default function CursosEspecializadosPage() {
               {/* Comercio Exterior */}
               <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                 <div className="bg-gradient-to-r from-rose-600 to-pink-600 p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black text-white">Comercio Exterior</h3>
-                    <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm font-bold">
-                      51% demanda
-                    </span>
-                  </div>
+                  <h3 className="text-2xl font-black text-white">Comercio Exterior</h3>
                 </div>
                 <div className="p-6">
                   <div className="mb-6">
@@ -382,12 +337,7 @@ export default function CursosEspecializadosPage() {
               {/* Farmacéutico y Life Sciences */}
               <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
                 <div className="bg-gradient-to-r from-teal-600 to-cyan-600 p-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black text-white">Farmacéutico y Life Sciences</h3>
-                    <span className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm font-bold">
-                      39% demanda
-                    </span>
-                  </div>
+                  <h3 className="text-2xl font-black text-white">Farmacéutico y Life Sciences</h3>
                 </div>
                 <div className="p-6">
                   <div className="mb-6">
@@ -743,9 +693,9 @@ export default function CursosEspecializadosPage() {
                 <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
                   🎓
                 </div>
-                <h3 className="text-xl font-bold mb-2">Certificación CEFR</h3>
+                <h3 className="text-xl font-bold mb-2">Preparación de Exámenes</h3>
                 <p className="text-slate-300 text-sm">
-                  Certificado oficial reconocido por empresas europeas
+                  Te preparamos según los criterios de evaluación de exámenes oficiales CEFR
                 </p>
               </div>
             </div>
@@ -817,6 +767,26 @@ export default function CursosEspecializadosPage() {
                     Visitar EURES Portal
                     <span>→</span>
                   </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Disclaimer sobre Certificaciones */}
+        <section className="py-12 px-4 sm:px-6 lg:px-8 bg-white border-t border-slate-200">
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
+              <div className="flex items-start gap-3">
+                <div className="text-2xl">ℹ️</div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-2">Información sobre Exámenes Oficiales</h4>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    Focus English no es un centro examinador autorizado ni está afiliado a instituciones certificadoras como Cambridge, 
+                    TOEFL, IELTS o similares. Nuestros cursos de preparación están diseñados siguiendo los criterios de evaluación y 
+                    requisitos de estos exámenes oficiales para ayudarte a prepararte de manera efectiva. Para obtener certificaciones 
+                    oficiales, deberás inscribirte y presentar los exámenes directamente con las instituciones certificadoras correspondientes.
+                  </p>
                 </div>
               </div>
             </div>

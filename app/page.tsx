@@ -28,7 +28,7 @@ export default function HomePage() {
                 <span className="text-lg font-black">Focus English</span>
               </div>
               <p className="text-sm text-slate-400">
-                Aprende inglés para trabajar, viajar o certificarte. Programas de 90 días con certificación CEFR.
+                Cursos de inglés especializados para trabajar, viajar o preparar exámenes oficiales. Programas personalizados de 90 días.
               </p>
             </div>
 
