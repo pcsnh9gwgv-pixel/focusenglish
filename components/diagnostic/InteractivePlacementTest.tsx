@@ -4,16 +4,22 @@ import { useState } from "react";
 import { Button } from "../ui/Button";
 
 // Tipos
+type TestGoal = "travel" | "work" | "exams" | null;
+type WorkSector = "marketing" | "engineering" | "administration" | "sales" | "hospitality" | "education" | null;
+
 interface Question {
   id: number;
   question: string;
   options: string[];
   correctAnswer: number;
   level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
-  category: "grammar" | "vocabulary" | "reading";
+  category: "grammar" | "vocabulary" | "reading" | "practical";
+  context?: string;
 }
 
 interface TestResult {
+  goal: TestGoal;
+  sector?: WorkSector;
   level: string;
   score: number;
   totalQuestions: number;
@@ -21,199 +27,407 @@ interface TestResult {
     grammar: number;
     vocabulary: number;
     reading: number;
+    practical: number;
   };
   strengths: string[];
   improvements: string[];
   recommendedCourse: string;
+  nextSteps: string[];
 }
 
-// Banco de preguntas
-const questions: Question[] = [
-  // A1 - Grammar
+// Banco de preguntas para VIAJES
+const travelQuestions: Question[] = [
+  // A1
   {
     id: 1,
-    question: "She ___ a teacher.",
-    options: ["am", "is", "are", "be"],
-    correctAnswer: 1,
+    question: "At the airport: 'Where is the ___ to gate 24?'",
+    options: ["way", "road", "street", "path"],
+    correctAnswer: 0,
     level: "A1",
-    category: "grammar",
+    category: "vocabulary",
+    context: "Airport navigation"
   },
   {
     id: 2,
-    question: "I ___ coffee every morning.",
-    options: ["drinks", "drinking", "drink", "to drink"],
-    correctAnswer: 2,
+    question: "Hotel check-in: 'I ___ a reservation under Smith.'",
+    options: ["has", "have", "having", "had"],
+    correctAnswer: 1,
     level: "A1",
     category: "grammar",
+    context: "Hotel"
   },
-  // A1 - Vocabulary
+  // A2
   {
     id: 3,
-    question: "What do you use to write? A ___",
-    options: ["book", "pen", "table", "chair"],
-    correctAnswer: 1,
-    level: "A1",
-    category: "vocabulary",
+    question: "At a restaurant: 'Could I ___ the menu, please?'",
+    options: ["look", "watch", "see", "view"],
+    correctAnswer: 2,
+    level: "A2",
+    category: "practical",
+    context: "Restaurant"
   },
-  // A2 - Grammar
   {
     id: 4,
-    question: "Yesterday, I ___ to the cinema.",
-    options: ["go", "went", "going", "gone"],
-    correctAnswer: 1,
-    level: "A2",
-    category: "grammar",
-  },
-  {
-    id: 5,
-    question: "She has ___ in London for five years.",
-    options: ["live", "living", "lives", "lived"],
-    correctAnswer: 3,
-    level: "A2",
-    category: "grammar",
-  },
-  // A2 - Vocabulary
-  {
-    id: 6,
-    question: "I need to ___ an appointment with the doctor.",
-    options: ["do", "make", "have", "get"],
+    question: "Asking for directions: 'How ___ is the museum from here?'",
+    options: ["long", "far", "much", "many"],
     correctAnswer: 1,
     level: "A2",
     category: "vocabulary",
   },
-  // B1 - Grammar
+  // B1
   {
-    id: 7,
-    question: "If I ___ more time, I would travel more.",
-    options: ["have", "had", "will have", "would have"],
+    id: 5,
+    question: "Flight delay: 'Our flight has been ___ due to bad weather.'",
+    options: ["cancelled", "stopped", "finished", "ended"],
+    correctAnswer: 0,
+    level: "B1",
+    category: "vocabulary",
+    context: "Airport problems"
+  },
+  {
+    id: 6,
+    question: "Hotel complaint: 'I'm afraid there ___ a problem with the heating.'",
+    options: ["has", "is", "are", "have"],
     correctAnswer: 1,
     level: "B1",
     category: "grammar",
+  },
+  // B2
+  {
+    id: 7,
+    question: "Travel insurance: 'The policy covers all medical expenses ___ you travel within Europe.'",
+    options: ["as long as", "despite", "although", "unless"],
+    correctAnswer: 0,
+    level: "B2",
+    category: "reading",
   },
   {
     id: 8,
-    question: "The report ___ by the team yesterday.",
-    options: ["completed", "was completed", "is completed", "completing"],
+    question: "Customs: 'Do you have anything to ___?'",
+    options: ["announce", "declare", "inform", "report"],
     correctAnswer: 1,
-    level: "B1",
-    category: "grammar",
+    level: "B2",
+    category: "vocabulary",
+    context: "Customs and immigration"
   },
-  // B1 - Vocabulary
+  // C1
   {
     id: 9,
-    question: "The company is trying to ___ its market share.",
-    options: ["decrease", "expand", "reduce", "minimize"],
+    question: "Travel advisory: 'Tourists are advised to remain ___ due to civil unrest.'",
+    options: ["careful", "vigilant", "attentive", "watchful"],
+    correctAnswer: 1,
+    level: "C1",
+    category: "vocabulary",
+  },
+  {
+    id: 10,
+    question: "Complaint: '___ I informed about the cancellation earlier, I could have made alternative arrangements.'",
+    options: ["If I was", "Had I been", "Would I be", "Should I be"],
+    correctAnswer: 1,
+    level: "C1",
+    category: "grammar",
+  },
+];
+
+// Banco de preguntas para MARKETING
+const marketingQuestions: Question[] = [
+  // A2-B1
+  {
+    id: 11,
+    question: "Our new campaign will ___ on social media next week.",
+    options: ["start", "launch", "begin", "open"],
     correctAnswer: 1,
     level: "B1",
     category: "vocabulary",
-  },
-  // B1 - Reading
-  {
-    id: 10,
-    question: "Read: 'Despite the challenges, the team achieved remarkable results.' What does 'despite' mean?",
-    options: ["Because of", "In spite of", "Thanks to", "Due to"],
-    correctAnswer: 1,
-    level: "B1",
-    category: "reading",
-  },
-  // B2 - Grammar
-  {
-    id: 11,
-    question: "By this time next year, we ___ the project.",
-    options: ["complete", "will complete", "will have completed", "are completing"],
-    correctAnswer: 2,
-    level: "B2",
-    category: "grammar",
+    context: "Campaign management"
   },
   {
     id: 12,
-    question: "___ harder, he would have passed the exam.",
-    options: ["If he studied", "Had he studied", "If he studies", "Should he study"],
-    correctAnswer: 1,
-    level: "B2",
-    category: "grammar",
+    question: "We need to ___ our target audience more precisely.",
+    options: ["define", "make", "do", "create"],
+    correctAnswer: 0,
+    level: "B1",
+    category: "vocabulary",
   },
-  // B2 - Vocabulary
+  // B2
   {
     id: 13,
-    question: "The CEO's decision was quite ___; nobody expected it.",
-    options: ["predicted", "unprecedented", "predictable", "previous"],
+    question: "The ROI of this campaign ___ our expectations.",
+    options: ["overcome", "exceeded", "passed", "crossed"],
     correctAnswer: 1,
     level: "B2",
     category: "vocabulary",
+    context: "Analytics"
   },
-  // B2 - Reading
   {
     id: 14,
-    question: "Read: 'The implementation of this strategy entails significant resource allocation.' What does 'entails' mean?",
-    options: ["Prevents", "Requires", "Avoids", "Suggests"],
+    question: "Read: 'Our brand positioning leverages aspirational messaging to drive engagement.' What does 'leverages' mean?",
+    options: ["Ignores", "Uses strategically", "Avoids", "Questions"],
     correctAnswer: 1,
     level: "B2",
     category: "reading",
   },
-  // C1 - Grammar
+  // C1
   {
     id: 15,
-    question: "Scarcely ___ the door when the phone rang.",
-    options: ["had I opened", "I had opened", "did I open", "I opened"],
-    correctAnswer: 0,
+    question: "The campaign's ___ approach resonated with millennials.",
+    options: ["old", "traditional", "disruptive", "normal"],
+    correctAnswer: 2,
     level: "C1",
-    category: "grammar",
+    category: "vocabulary",
+    context: "Strategy"
   },
-  // C1 - Vocabulary
+];
+
+// Banco de preguntas para INGENIERÍA
+const engineeringQuestions: Question[] = [
+  // B1
   {
     id: 16,
-    question: "The proposal was met with ___ from the board members.",
-    options: ["skepticism", "belief", "trust", "faith"],
-    correctAnswer: 0,
-    level: "C1",
+    question: "We need to ___ the system before deployment.",
+    options: ["prove", "try", "test", "check"],
+    correctAnswer: 2,
+    level: "B1",
     category: "vocabulary",
+    context: "Testing"
   },
-  // C1 - Reading
   {
     id: 17,
-    question: "Read: 'The phenomenon is ubiquitous in modern society.' What does 'ubiquitous' mean?",
-    options: ["Rare", "Everywhere", "Important", "Dangerous"],
-    correctAnswer: 1,
-    level: "C1",
-    category: "reading",
-  },
-  // C2 - Grammar
-  {
-    id: 18,
-    question: "Were it not for your assistance, the project ___ on schedule.",
-    options: ["wouldn't have been completed", "won't be completed", "isn't completed", "wasn't completed"],
+    question: "The API ___ with the previous version.",
+    options: ["is compatible", "compatible", "compatibility", "compatibles"],
     correctAnswer: 0,
-    level: "C2",
+    level: "B1",
     category: "grammar",
   },
-  // C2 - Vocabulary
+  // B2
+  {
+    id: 18,
+    question: "The system architecture needs to be more ___.",
+    options: ["big", "scalable", "large", "expanded"],
+    correctAnswer: 1,
+    level: "B2",
+    category: "vocabulary",
+    context: "Architecture"
+  },
   {
     id: 19,
-    question: "The speaker's ___ remarks left the audience bewildered.",
-    options: ["clear", "obvious", "enigmatic", "simple"],
-    correctAnswer: 2,
-    level: "C2",
-    category: "vocabulary",
+    question: "Read: 'The implementation of microservices entails decomposing the monolith.' What does 'entails' mean?",
+    options: ["Prevents", "Requires", "Avoids", "Simplifies"],
+    correctAnswer: 1,
+    level: "B2",
+    category: "reading",
   },
-  // C2 - Reading
+  // C1
   {
     id: 20,
-    question: "Read: 'Her argument was replete with logical fallacies.' What does 'replete' mean?",
-    options: ["Empty", "Full", "Missing", "Lacking"],
+    question: "The algorithm's time complexity is ___ to O(n log n).",
+    options: ["near", "close", "asymptotic", "similar"],
+    correctAnswer: 2,
+    level: "C1",
+    category: "vocabulary",
+    context: "Algorithms"
+  },
+];
+
+// Banco de preguntas para ADMINISTRACIÓN
+const administrationQuestions: Question[] = [
+  // B1
+  {
+    id: 21,
+    question: "Please ___ the expense report by Friday.",
+    options: ["give", "send", "submit", "pass"],
+    correctAnswer: 2,
+    level: "B1",
+    category: "vocabulary",
+    context: "Reports"
+  },
+  {
+    id: 22,
+    question: "The budget ___ approved by the board.",
+    options: ["has been", "have been", "was being", "were"],
+    correctAnswer: 0,
+    level: "B1",
+    category: "grammar",
+  },
+  // B2
+  {
+    id: 23,
+    question: "We need to ___ our financial procedures.",
+    options: ["make better", "improve", "streamline", "fix"],
+    correctAnswer: 2,
+    level: "B2",
+    category: "vocabulary",
+    context: "Process improvement"
+  },
+  {
+    id: 24,
+    question: "The quarterly results show a significant ___ in revenue.",
+    options: ["grow", "growth", "growing", "grew"],
     correctAnswer: 1,
-    level: "C2",
+    level: "B2",
+    category: "grammar",
+  },
+  // C1
+  {
+    id: 25,
+    question: "The audit revealed several ___ in our compliance procedures.",
+    options: ["problems", "issues", "discrepancies", "mistakes"],
+    correctAnswer: 2,
+    level: "C1",
+    category: "vocabulary",
+    context: "Compliance"
+  },
+];
+
+// Banco de preguntas para EXÁMENES
+const examQuestions: Question[] = [
+  // Mix de todos los niveles - estilo examen oficial
+  {
+    id: 26,
+    question: "Grammar: She ___ to Paris three times this year.",
+    options: ["goes", "has been", "went", "is going"],
+    correctAnswer: 1,
+    level: "B1",
+    category: "grammar",
+  },
+  {
+    id: 27,
+    question: "Vocabulary: The concert was ___; everyone loved it.",
+    options: ["terrible", "boring", "outstanding", "normal"],
+    correctAnswer: 2,
+    level: "B1",
+    category: "vocabulary",
+  },
+  {
+    id: 28,
+    question: "Reading: 'Despite the inclement weather, the event proceeded as planned.' What does 'inclement' mean?",
+    options: ["Beautiful", "Bad", "Warm", "Clear"],
+    correctAnswer: 1,
+    level: "B2",
     category: "reading",
+  },
+  {
+    id: 29,
+    question: "Grammar: ___ harder, he would have passed the exam.",
+    options: ["If he studied", "Had he studied", "If he studies", "Should he study"],
+    correctAnswer: 1,
+    level: "C1",
+    category: "grammar",
+  },
+  {
+    id: 30,
+    question: "Vocabulary: The speaker's argument was ___; nobody could refute it.",
+    options: ["weak", "wrong", "irrefutable", "simple"],
+    correctAnswer: 2,
+    level: "C1",
+    category: "vocabulary",
+  },
+];
+
+// Preguntas generales (gramática base para todos)
+const generalQuestions: Question[] = [
+  {
+    id: 31,
+    question: "I ___ English for three years.",
+    options: ["study", "am studying", "have been studying", "studied"],
+    correctAnswer: 2,
+    level: "B1",
+    category: "grammar",
+  },
+  {
+    id: 32,
+    question: "If I ___ you, I would accept the offer.",
+    options: ["am", "was", "were", "be"],
+    correctAnswer: 2,
+    level: "B2",
+    category: "grammar",
+  },
+  {
+    id: 33,
+    question: "The project ___ by next month.",
+    options: ["will complete", "will be completed", "completes", "is completing"],
+    correctAnswer: 1,
+    level: "B1",
+    category: "grammar",
+  },
+  {
+    id: 34,
+    question: "She denied ___ the money.",
+    options: ["to take", "taking", "take", "took"],
+    correctAnswer: 1,
+    level: "B2",
+    category: "grammar",
+  },
+  {
+    id: 35,
+    question: "Scarcely ___ when it started to rain.",
+    options: ["we arrived", "had we arrived", "we had arrived", "did we arrive"],
+    correctAnswer: 1,
+    level: "C1",
+    category: "grammar",
   },
 ];
 
 export function InteractivePlacementTest() {
+  const [goal, setGoal] = useState<TestGoal>(null);
+  const [sector, setSector] = useState<WorkSector>(null);
   const [started, setStarted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [result, setResult] = useState<TestResult | null>(null);
+  const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
+
+  const handleGoalSelect = (selectedGoal: TestGoal) => {
+    setGoal(selectedGoal);
+    if (selectedGoal !== "work") {
+      // Para viajes y exámenes, ir directo al test
+      prepareTest(selectedGoal, null);
+    }
+  };
+
+  const handleSectorSelect = (selectedSector: WorkSector) => {
+    setSector(selectedSector);
+    prepareTest("work", selectedSector);
+  };
+
+  const prepareTest = (testGoal: TestGoal, workSector: WorkSector) => {
+    let specificQuestions: Question[] = [];
+    
+    // Seleccionar preguntas según objetivo
+    if (testGoal === "travel") {
+      specificQuestions = [...travelQuestions];
+    } else if (testGoal === "exams") {
+      specificQuestions = [...examQuestions];
+    } else if (testGoal === "work" && workSector) {
+      switch (workSector) {
+        case "marketing":
+          specificQuestions = [...marketingQuestions];
+          break;
+        case "engineering":
+          specificQuestions = [...engineeringQuestions];
+          break;
+        case "administration":
+          specificQuestions = [...administrationQuestions];
+          break;
+        default:
+          specificQuestions = [...marketingQuestions]; // Default
+      }
+    }
+
+    // Agregar preguntas generales
+    const allQuestions = [...specificQuestions, ...generalQuestions];
+    
+    // Seleccionar 15 preguntas variadas
+    const selectedQs = shuffleAndSelect(allQuestions, 15);
+    setSelectedQuestions(selectedQs);
+  };
+
+  const shuffleAndSelect = (questions: Question[], count: number): Question[] => {
+    const shuffled = [...questions].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  };
 
   const handleStart = () => {
     setStarted(true);
@@ -234,20 +448,19 @@ export function InteractivePlacementTest() {
     setAnswers(newAnswers);
     setSelectedAnswer(null);
 
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < selectedQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // Calcular resultados
       calculateResults(newAnswers);
     }
   };
 
   const calculateResults = (userAnswers: number[]) => {
     let correctCount = 0;
-    const categoryScores = { grammar: 0, vocabulary: 0, reading: 0 };
-    const categoryTotals = { grammar: 0, vocabulary: 0, reading: 0 };
+    const categoryScores = { grammar: 0, vocabulary: 0, reading: 0, practical: 0 };
+    const categoryTotals = { grammar: 0, vocabulary: 0, reading: 0, practical: 0 };
 
-    questions.forEach((q, index) => {
+    selectedQuestions.forEach((q, index) => {
       categoryTotals[q.category]++;
       if (userAnswers[index] === q.correctAnswer) {
         correctCount++;
@@ -255,111 +468,342 @@ export function InteractivePlacementTest() {
       }
     });
 
-    const percentage = (correctCount / questions.length) * 100;
+    const percentage = (correctCount / selectedQuestions.length) * 100;
     let level = "A1";
     let recommendedCourse = "";
+    let nextSteps: string[] = [];
 
-    if (percentage >= 90) {
-      level = "C2";
-      recommendedCourse = "Cursos avanzados de preparación C2";
-    } else if (percentage >= 80) {
-      level = "C1";
-      recommendedCourse = "Preparación de exámenes avanzados";
-    } else if (percentage >= 70) {
-      level = "B2";
-      recommendedCourse = "Inglés profesional avanzado";
-    } else if (percentage >= 60) {
-      level = "B1";
-      recommendedCourse = "Inglés intermedio para trabajo";
-    } else if (percentage >= 45) {
-      level = "A2";
-      recommendedCourse = "Inglés básico para viajes";
-    } else {
-      level = "A1";
-      recommendedCourse = "Inglés desde cero";
+    // Determinar nivel
+    if (percentage >= 90) level = "C2";
+    else if (percentage >= 80) level = "C1";
+    else if (percentage >= 70) level = "B2";
+    else if (percentage >= 60) level = "B1";
+    else if (percentage >= 45) level = "A2";
+    else level = "A1";
+
+    // Recomendaciones específicas por objetivo
+    if (goal === "travel") {
+      recommendedCourse = level >= "B1" 
+        ? `Inglés Avanzado para Viajes (${level})`
+        : `Inglés Esencial para Viajeros (${level})`;
+      nextSteps = [
+        "Practicar conversaciones en aeropuertos y hoteles",
+        "Aprender frases para emergencias",
+        "Mejorar pronunciación para comunicación clara"
+      ];
+    } else if (goal === "exams") {
+      recommendedCourse = level >= "B2"
+        ? `Preparación ${level} - Cambridge/IELTS`
+        : `Preparación de Base para Exámenes (${level})`;
+      nextSteps = [
+        "Practicar con exámenes de prueba",
+        "Mejorar técnicas de examen",
+        "Estudiar estrategias específicas por sección"
+      ];
+    } else if (goal === "work") {
+      const sectorName = sector === "marketing" ? "Marketing" 
+        : sector === "engineering" ? "Ingeniería"
+        : sector === "administration" ? "Administración" : "Profesional";
+      recommendedCourse = `Inglés ${sectorName} - Nivel ${level}`;
+      nextSteps = [
+        "Practicar vocabulario técnico del sector",
+        "Mejorar redacción de emails profesionales",
+        "Preparar presentaciones en inglés"
+      ];
     }
 
-    // Determinar fortalezas y áreas de mejora
+    // Fortalezas y mejoras
     const strengths: string[] = [];
     const improvements: string[] = [];
 
     Object.entries(categoryScores).forEach(([cat, score]) => {
       const total = categoryTotals[cat as keyof typeof categoryTotals];
+      if (total === 0) return;
+      
       const catPercentage = (score / total) * 100;
+      const categoryName = 
+        cat === "grammar" ? "Gramática" 
+        : cat === "vocabulary" ? "Vocabulario"
+        : cat === "reading" ? "Comprensión lectora"
+        : "Habilidades prácticas";
       
       if (catPercentage >= 70) {
-        strengths.push(cat === "grammar" ? "Gramática" : cat === "vocabulary" ? "Vocabulario" : "Comprensión lectora");
+        strengths.push(categoryName);
       } else if (catPercentage < 50) {
-        improvements.push(cat === "grammar" ? "Gramática" : cat === "vocabulary" ? "Vocabulario" : "Comprensión lectora");
+        improvements.push(categoryName);
       }
     });
 
     setResult({
+      goal,
+      sector,
       level,
       score: correctCount,
-      totalQuestions: questions.length,
+      totalQuestions: selectedQuestions.length,
       categoryScores: {
-        grammar: Math.round((categoryScores.grammar / categoryTotals.grammar) * 100),
-        vocabulary: Math.round((categoryScores.vocabulary / categoryTotals.vocabulary) * 100),
-        reading: Math.round((categoryScores.reading / categoryTotals.reading) * 100),
+        grammar: categoryTotals.grammar > 0 ? Math.round((categoryScores.grammar / categoryTotals.grammar) * 100) : 0,
+        vocabulary: categoryTotals.vocabulary > 0 ? Math.round((categoryScores.vocabulary / categoryTotals.vocabulary) * 100) : 0,
+        reading: categoryTotals.reading > 0 ? Math.round((categoryScores.reading / categoryTotals.reading) * 100) : 0,
+        practical: categoryTotals.practical > 0 ? Math.round((categoryScores.practical / categoryTotals.practical) * 100) : 0,
       },
       strengths: strengths.length > 0 ? strengths : ["Fundamentos básicos"],
       improvements: improvements.length > 0 ? improvements : ["Mantener nivel actual"],
       recommendedCourse,
+      nextSteps,
     });
 
     setShowResult(true);
   };
 
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
-  const question = questions[currentQuestion];
+  const progress = selectedQuestions.length > 0 ? ((currentQuestion + 1) / selectedQuestions.length) * 100 : 0;
+  const question = selectedQuestions[currentQuestion];
 
-  // Pantalla de inicio
+  // Pantalla de selección de objetivo
+  if (!goal) {
+    return (
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-black text-slate-900 mb-4">
+            ¿Cuál es tu objetivo con el inglés?
+          </h2>
+          <p className="text-lg text-slate-600">
+            Selecciona tu objetivo para recibir un test personalizado
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Viajes */}
+          <button
+            onClick={() => handleGoalSelect("travel")}
+            className="bg-white rounded-2xl p-8 border-2 border-slate-200 hover:border-violet-500 hover:shadow-xl transition-all group text-left"
+          >
+            <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-4xl">✈️</span>
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
+              Para Viajar
+            </h3>
+            <p className="text-slate-600 mb-4">
+              Evalúa tu inglés para situaciones de viaje: aeropuertos, hoteles, restaurantes y turismo.
+            </p>
+            <ul className="space-y-2 text-sm text-slate-600">
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Vocabulario de viajes</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Situaciones prácticas</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Frases esenciales</span>
+              </li>
+            </ul>
+          </button>
+
+          {/* Trabajo */}
+          <button
+            onClick={() => handleGoalSelect("work")}
+            className="bg-white rounded-2xl p-8 border-2 border-violet-300 hover:border-violet-500 hover:shadow-xl transition-all group text-left shadow-lg"
+          >
+            <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-4xl">💼</span>
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
+              Para Trabajar
+            </h3>
+            <p className="text-slate-600 mb-4">
+              Test especializado según tu sector profesional: marketing, ingeniería, administración y más.
+            </p>
+            <ul className="space-y-2 text-sm text-slate-600">
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Vocabulario técnico</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Contexto profesional</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Por sectores</span>
+              </li>
+            </ul>
+            <div className="mt-4 text-violet-600 font-semibold text-sm group-hover:text-violet-700">
+              → Siguiente: Elige tu sector
+            </div>
+          </button>
+
+          {/* Exámenes */}
+          <button
+            onClick={() => handleGoalSelect("exams")}
+            className="bg-white rounded-2xl p-8 border-2 border-slate-200 hover:border-violet-500 hover:shadow-xl transition-all group text-left"
+          >
+            <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-4xl">🎓</span>
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
+              Para Certificarme
+            </h3>
+            <p className="text-slate-600 mb-4">
+              Evaluación estilo exámenes oficiales: Cambridge, TOEFL, IELTS. Mide tu preparación.
+            </p>
+            <ul className="space-y-2 text-sm text-slate-600">
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Formato de examen</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Gramática académica</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>Comprensión avanzada</span>
+              </li>
+            </ul>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Pantalla de selección de sector (solo para trabajo)
+  if (goal === "work" && !sector) {
+    return (
+      <div className="max-w-5xl mx-auto">
+        <button
+          onClick={() => setGoal(null)}
+          className="mb-8 text-violet-600 hover:text-violet-700 font-semibold flex items-center"
+        >
+          ← Volver a objetivos
+        </button>
+
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-black text-slate-900 mb-4">
+            ¿En qué sector trabajas?
+          </h2>
+          <p className="text-lg text-slate-600">
+            Personaliza el test según tu área profesional
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Marketing */}
+          <button
+            onClick={() => handleSectorSelect("marketing")}
+            className="bg-white rounded-2xl p-8 border-2 border-slate-200 hover:border-violet-500 hover:shadow-xl transition-all group text-left"
+          >
+            <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-4xl">📱</span>
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
+              Marketing
+            </h3>
+            <p className="text-slate-600">
+              Campañas, ROI, branding, redes sociales, análisis de mercado.
+            </p>
+          </button>
+
+          {/* Ingeniería */}
+          <button
+            onClick={() => handleSectorSelect("engineering")}
+            className="bg-white rounded-2xl p-8 border-2 border-slate-200 hover:border-violet-500 hover:shadow-xl transition-all group text-left"
+          >
+            <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-4xl">⚙️</span>
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
+              Ingeniería
+            </h3>
+            <p className="text-slate-600">
+              Desarrollo, testing, arquitectura, APIs, documentación técnica.
+            </p>
+          </button>
+
+          {/* Administración */}
+          <button
+            onClick={() => handleSectorSelect("administration")}
+            className="bg-white rounded-2xl p-8 border-2 border-slate-200 hover:border-violet-500 hover:shadow-xl transition-all group text-left"
+          >
+            <div className="w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <span className="text-4xl">📊</span>
+            </div>
+            <h3 className="text-2xl font-bold text-slate-900 mb-3">
+              Administración
+            </h3>
+            <p className="text-slate-600">
+              Finanzas, reportes, compliance, presupuestos, auditorías.
+            </p>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Pantalla de inicio del test
   if (!started) {
+    const goalIcon = goal === "travel" ? "✈️" : goal === "work" ? "💼" : "🎓";
+    const goalName = goal === "travel" ? "Viajes" : goal === "work" ? "Trabajo" : "Certificaciones";
+    const sectorName = sector === "marketing" ? " - Marketing" 
+      : sector === "engineering" ? " - Ingeniería"
+      : sector === "administration" ? " - Administración" : "";
+
     return (
       <div className="max-w-4xl mx-auto">
+        <button
+          onClick={() => {
+            setGoal(null);
+            setSector(null);
+          }}
+          className="mb-8 text-violet-600 hover:text-violet-700 font-semibold flex items-center"
+        >
+          ← Cambiar objetivo
+        </button>
+
         <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-12">
           <div className="text-center mb-8">
             <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center">
-              <span className="text-4xl">🎯</span>
+              <span className="text-4xl">{goalIcon}</span>
             </div>
-            <h2 className="text-3xl font-black text-slate-900 mb-4">
-              Test de Nivel de Inglés
+            <h2 className="text-3xl font-black text-slate-900 mb-2">
+              Test de Nivel: {goalName}{sectorName}
             </h2>
             <p className="text-lg text-slate-600 mb-6">
-              Evaluación completa de tus habilidades en inglés
+              Evaluación personalizada para tu objetivo específico
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             <div className="bg-slate-50 rounded-xl p-6 text-center">
-              <div className="text-2xl font-black text-violet-600 mb-2">20</div>
+              <div className="text-2xl font-black text-violet-600 mb-2">15</div>
               <div className="text-sm text-slate-600">Preguntas</div>
             </div>
             <div className="bg-slate-50 rounded-xl p-6 text-center">
-              <div className="text-2xl font-black text-violet-600 mb-2">15</div>
+              <div className="text-2xl font-black text-violet-600 mb-2">10</div>
               <div className="text-sm text-slate-600">Minutos</div>
             </div>
             <div className="bg-slate-50 rounded-xl p-6 text-center">
               <div className="text-2xl font-black text-violet-600 mb-2">A1-C2</div>
-              <div className="text-sm text-slate-600">Niveles CEFR</div>
+              <div className="text-sm text-slate-600">Niveles</div>
             </div>
           </div>
 
           <div className="space-y-4 mb-8">
-            <h3 className="font-bold text-slate-900">El test incluye:</h3>
+            <h3 className="font-bold text-slate-900">Este test incluye:</h3>
             <ul className="space-y-3">
               <li className="flex items-start">
                 <span className="mr-3 text-violet-600">✓</span>
-                <span className="text-slate-700">Preguntas de gramática, vocabulario y comprensión</span>
+                <span className="text-slate-700">Preguntas específicas para {goalName.toLowerCase()}{sectorName.toLowerCase()}</span>
               </li>
               <li className="flex items-start">
                 <span className="mr-3 text-violet-600">✓</span>
-                <span className="text-slate-700">Evaluación adaptativa según el Marco CEFR</span>
+                <span className="text-slate-700">Vocabulario y situaciones del contexto real</span>
               </li>
               <li className="flex items-start">
                 <span className="mr-3 text-violet-600">✓</span>
-                <span className="text-slate-700">Resultados inmediatos con análisis detallado</span>
+                <span className="text-slate-700">Evaluación CEFR con análisis detallado</span>
               </li>
               <li className="flex items-start">
                 <span className="mr-3 text-violet-600">✓</span>
@@ -373,7 +817,7 @@ export function InteractivePlacementTest() {
             size="lg"
             className="w-full"
           >
-            Comenzar Test Ahora →
+            Comenzar Test Personalizado →
           </Button>
         </div>
       </div>
@@ -393,6 +837,9 @@ export function InteractivePlacementTest() {
 
     const levelColor = levelColors[result.level as keyof typeof levelColors] || levelColors.B1;
 
+    const goalIcon = result.goal === "travel" ? "✈️" : result.goal === "work" ? "💼" : "🎓";
+    const goalName = result.goal === "travel" ? "Viajes" : result.goal === "work" ? "Trabajo" : "Certificaciones";
+
     return (
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-8 md:p-12">
@@ -404,6 +851,15 @@ export function InteractivePlacementTest() {
             <h2 className="text-3xl font-black text-slate-900 mb-4">
               ¡Test Completado!
             </h2>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <span className="text-2xl">{goalIcon}</span>
+              <span className="text-lg text-slate-600">{goalName}</span>
+              {result.sector && (
+                <span className="text-lg text-slate-600">
+                  - {result.sector === "marketing" ? "Marketing" : result.sector === "engineering" ? "Ingeniería" : "Administración"}
+                </span>
+              )}
+            </div>
             <div className={`inline-block px-6 py-3 rounded-full border-2 ${levelColor} font-black text-2xl mb-4`}>
               Nivel: {result.level}
             </div>
@@ -416,44 +872,65 @@ export function InteractivePlacementTest() {
           <div className="mb-8">
             <h3 className="text-xl font-bold text-slate-900 mb-6">Análisis por Habilidad</h3>
             <div className="space-y-4">
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-semibold text-slate-700">Gramática</span>
-                  <span className="text-sm font-bold text-violet-600">{result.categoryScores.grammar}%</span>
+              {result.categoryScores.grammar > 0 && (
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-semibold text-slate-700">Gramática</span>
+                    <span className="text-sm font-bold text-violet-600">{result.categoryScores.grammar}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div
+                      className="bg-gradient-to-r from-violet-600 to-purple-600 h-3 rounded-full transition-all"
+                      style={{ width: `${result.categoryScores.grammar}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-3">
-                  <div
-                    className="bg-gradient-to-r from-violet-600 to-purple-600 h-3 rounded-full transition-all"
-                    style={{ width: `${result.categoryScores.grammar}%` }}
-                  />
-                </div>
-              </div>
+              )}
 
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-semibold text-slate-700">Vocabulario</span>
-                  <span className="text-sm font-bold text-violet-600">{result.categoryScores.vocabulary}%</span>
+              {result.categoryScores.vocabulary > 0 && (
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-semibold text-slate-700">Vocabulario</span>
+                    <span className="text-sm font-bold text-violet-600">{result.categoryScores.vocabulary}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div
+                      className="bg-gradient-to-r from-violet-600 to-purple-600 h-3 rounded-full transition-all"
+                      style={{ width: `${result.categoryScores.vocabulary}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-3">
-                  <div
-                    className="bg-gradient-to-r from-violet-600 to-purple-600 h-3 rounded-full transition-all"
-                    style={{ width: `${result.categoryScores.vocabulary}%` }}
-                  />
-                </div>
-              </div>
+              )}
 
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-semibold text-slate-700">Comprensión Lectora</span>
-                  <span className="text-sm font-bold text-violet-600">{result.categoryScores.reading}%</span>
+              {result.categoryScores.reading > 0 && (
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-semibold text-slate-700">Comprensión Lectora</span>
+                    <span className="text-sm font-bold text-violet-600">{result.categoryScores.reading}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div
+                      className="bg-gradient-to-r from-violet-600 to-purple-600 h-3 rounded-full transition-all"
+                      style={{ width: `${result.categoryScores.reading}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-3">
-                  <div
-                    className="bg-gradient-to-r from-violet-600 to-purple-600 h-3 rounded-full transition-all"
-                    style={{ width: `${result.categoryScores.reading}%` }}
-                  />
+              )}
+
+              {result.categoryScores.practical > 0 && (
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-semibold text-slate-700">Habilidades Prácticas</span>
+                    <span className="text-sm font-bold text-violet-600">{result.categoryScores.practical}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div
+                      className="bg-gradient-to-r from-violet-600 to-purple-600 h-3 rounded-full transition-all"
+                      style={{ width: `${result.categoryScores.practical}%` }}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -485,25 +962,40 @@ export function InteractivePlacementTest() {
           </div>
 
           {/* Recomendación de curso */}
-          <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-6 border-2 border-violet-200 mb-8">
+          <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl p-6 border-2 border-violet-200 mb-6">
             <h4 className="font-bold text-slate-900 mb-2 flex items-center">
               <span className="mr-2">🎯</span>
               Curso Recomendado
             </h4>
-            <p className="text-slate-700 mb-4">{result.recommendedCourse}</p>
+            <p className="text-slate-700 font-semibold mb-4">{result.recommendedCourse}</p>
+            
+            <h5 className="font-bold text-slate-900 mb-2 text-sm">Próximos Pasos:</h5>
+            <ul className="space-y-2 mb-4">
+              {result.nextSteps.map((step, index) => (
+                <li key={index} className="text-sm text-slate-700">
+                  {index + 1}. {step}
+                </li>
+              ))}
+            </ul>
+
             <Button href="/cursos-especializados" size="sm">
-              Ver Cursos →
+              Ver Cursos Especializados →
             </Button>
           </div>
 
           {/* Acciones */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Button
-              onClick={handleStart}
+              onClick={() => {
+                setGoal(null);
+                setSector(null);
+                setStarted(false);
+                setShowResult(false);
+              }}
               variant="secondary"
               className="flex-1"
             >
-              Repetir Test
+              Hacer Otro Test
             </Button>
             <Button
               href="/signup"
@@ -525,7 +1017,7 @@ export function InteractivePlacementTest() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-semibold text-slate-700">
-              Pregunta {currentQuestion + 1} de {questions.length}
+              Pregunta {currentQuestion + 1} de {selectedQuestions.length}
             </span>
             <span className="text-sm font-semibold text-violet-600">
               {Math.round(progress)}%
@@ -539,14 +1031,22 @@ export function InteractivePlacementTest() {
           </div>
         </div>
 
-        {/* Categoría y nivel */}
-        <div className="flex gap-2 mb-6">
+        {/* Categoría, nivel y contexto */}
+        <div className="flex flex-wrap gap-2 mb-6">
           <span className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-xs font-semibold">
-            {question.category === "grammar" ? "Gramática" : question.category === "vocabulary" ? "Vocabulario" : "Comprensión"}
+            {question.category === "grammar" ? "Gramática" 
+              : question.category === "vocabulary" ? "Vocabulario"
+              : question.category === "reading" ? "Comprensión"
+              : "Práctico"}
           </span>
           <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-semibold">
             Nivel {question.level}
           </span>
+          {question.context && (
+            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+              {question.context}
+            </span>
+          )}
         </div>
 
         {/* Pregunta */}
@@ -599,7 +1099,7 @@ export function InteractivePlacementTest() {
           className="w-full"
           size="lg"
         >
-          {currentQuestion < questions.length - 1 ? "Siguiente →" : "Ver Resultados →"}
+          {currentQuestion < selectedQuestions.length - 1 ? "Siguiente →" : "Ver Resultados →"}
         </Button>
       </div>
     </div>
