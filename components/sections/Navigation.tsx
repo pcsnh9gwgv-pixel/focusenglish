@@ -7,6 +7,7 @@ import { Button } from "../ui/Button";
 import { MenuIcon, XIcon } from "../ui/Icons";
 
 const navigation = [
+  { name: "Cursos Especializados", href: "/cursos-especializados" },
   { name: "Para Trabajar", href: "/trabajo" },
   { name: "Para Viajar", href: "/viajes" },
   { name: "Para Certificarte", href: "/certificados" },
