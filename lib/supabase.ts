@@ -1,9 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Solo crear el cliente si las variables de entorno están configuradas
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 // Types para la base de datos
 export interface PlacementTestRecord {
@@ -22,6 +25,10 @@ export interface PlacementTestRecord {
 
 // Guardar resultado del placement test
 export async function savePlacementTest(data: PlacementTestRecord) {
+  if (!supabase) {
+    throw new Error('Supabase not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
+  }
+
   const { data: result, error } = await supabase
     .from('placement_tests')
     .insert([
@@ -49,6 +56,10 @@ export async function savePlacementTest(data: PlacementTestRecord) {
 
 // Obtener último resultado del usuario
 export async function getUserLastPlacementTest(email: string) {
+  if (!supabase) {
+    throw new Error('Supabase not configured');
+  }
+
   const { data, error } = await supabase
     .from('placement_tests')
     .select('*')
@@ -68,6 +79,10 @@ export async function getUserLastPlacementTest(email: string) {
 
 // Obtener todos los resultados del usuario
 export async function getUserPlacementTests(email: string) {
+  if (!supabase) {
+    throw new Error('Supabase not configured');
+  }
+
   const { data, error } = await supabase
     .from('placement_tests')
     .select('*')
@@ -84,6 +99,10 @@ export async function getUserPlacementTests(email: string) {
 
 // Estadísticas generales
 export async function getPlacementTestStats() {
+  if (!supabase) {
+    throw new Error('Supabase not configured');
+  }
+
   const { data, error } = await supabase
     .from('placement_tests')
     .select('level');
