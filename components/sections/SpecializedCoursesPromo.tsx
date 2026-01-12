@@ -9,7 +9,7 @@ export function SpecializedCoursesPromo() {
             ¿Buscas Inglés para Tu Sector Profesional?
           </h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Descubre nuestros cursos especializados basados en datos reales de demanda laboral en España y Europa
+            Cursos especializados para diferentes sectores laborales y objetivos profesionales
           </p>
         </div>
 
@@ -21,20 +21,20 @@ export function SpecializedCoursesPromo() {
               Trabajar en España
             </h3>
             <p className="text-slate-600 text-sm mb-4">
-              Sectores con mayor demanda de inglés según InfoJobs
+              Inglés específico para sectores profesionales en España
             </p>
             <ul className="space-y-2 mb-4">
               <li className="flex items-center gap-2 text-sm">
                 <span className="text-violet-600">•</span>
-                <span className="text-slate-700">Marketing (40%)</span>
+                <span className="text-slate-700">Marketing y Comunicación</span>
               </li>
               <li className="flex items-center gap-2 text-sm">
                 <span className="text-violet-600">•</span>
-                <span className="text-slate-700">Ingeniería (42%)</span>
+                <span className="text-slate-700">Ingeniería y Tecnología</span>
               </li>
               <li className="flex items-center gap-2 text-sm">
                 <span className="text-violet-600">•</span>
-                <span className="text-slate-700">Administración (45%)</span>
+                <span className="text-slate-700">Administración y Finanzas</span>
               </li>
             </ul>
           </div>
@@ -99,7 +99,7 @@ export function SpecializedCoursesPromo() {
             <span>→</span>
           </Link>
           <p className="mt-4 text-sm text-slate-600">
-            📊 Basados en datos reales de portales de empleo • 🎯 Vocabulario específico de tu sector
+            🎯 Vocabulario específico de tu sector • 💼 Situaciones profesionales reales
           </p>
         </div>
       </div>
