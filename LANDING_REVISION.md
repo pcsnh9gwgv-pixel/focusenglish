@@ -325,9 +325,8 @@ Footer: 🎯 Vocabulario específico de tu sector • 💼 Situaciones profesion
 ### Para Futuro:
 1. **Crear página `/examenes`**: Explicar en detalle la preparación para cada examen
 2. **Añadir FAQs sobre certificaciones**: Responder dudas comunes
-3. **Testimonios de preparación**: Historias de quienes APROBARON exámenes (sin prometer que nosotros certificamos)
-4. **Comparador de exámenes**: Ayudar a elegir qué examen preparar (Cambridge, TOEFL, IELTS)
-5. **Simulacros gratuitos**: Ofrecer tests de práctica siguiendo formato oficial
+3. **Comparador de exámenes**: Ayudar a elegir qué examen preparar (Cambridge, TOEFL, IELTS)
+4. **Simulacros gratuitos**: Ofrecer tests de práctica siguiendo formato oficial
 
 ### Para Mantener Transparencia:
 - ✅ Siempre usar "preparación" no "certificación"
