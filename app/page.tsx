@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/sections/Navigation";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { FeaturesSection } from "@/components/sections/FeaturesSection";
+import { SpecializedCoursesPromo } from "@/components/sections/SpecializedCoursesPromo";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { CTASection } from "@/components/sections/CTASection";
 
@@ -11,6 +12,7 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <FeaturesSection />
+        <SpecializedCoursesPromo />
         <FAQSection />
         <CTASection />
       </main>
