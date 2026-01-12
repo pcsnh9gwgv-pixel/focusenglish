@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import fs from "node:fs";
 import path from "node:path";
 
-const baseUrl = "https://englishworkinglab.com";
+const baseUrl = "https://focusenglish.com";
 const CONTENT_DIR = "content";
 
 function getSlugsFromDir(relativeDir: string) {
@@ -21,17 +21,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/`,
       lastModified: now,
+      changeFrequency: "daily",
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/cursos-especializados`,
+      lastModified: now,
       changeFrequency: "weekly",
-      priority: 1,
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/blog`,
       lastModified: now,
-      changeFrequency: "weekly",
+      changeFrequency: "daily",
       priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/diagnostico`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
   ];
 
+  // Add blog posts
   const blogSlugs = getSlugsFromDir(`${CONTENT_DIR}/blog`);
   urls.push(
     ...blogSlugs.map((slug) => ({
@@ -41,6 +54,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     }))
   );
+
+  // Add course pages dynamically
+  const goals = ['trabajo', 'viajes', 'examenes'];
+  const levels = ['a1', 'a2', 'b1', 'b2', 'c1', 'c2'];
+  
+  goals.forEach(goal => {
+    levels.forEach(level => {
+      urls.push({
+        url: `${baseUrl}/cursos/${goal}/${level}`,
+        lastModified: now,
+        changeFrequency: "monthly" as const,
+        priority: 0.5,
+      });
+    });
+  });
 
   return urls;
 }
