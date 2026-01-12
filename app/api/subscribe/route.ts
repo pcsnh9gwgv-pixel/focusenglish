@@ -132,7 +132,7 @@ export async function POST(request: Request) {
         // 1. Email de confirmación al usuario
         console.log('📧 Enviando email al usuario:', emailTrimmed);
         const userEmailResult = await resend.emails.send({
-          from: 'Focus English <onboarding@resend.dev>',
+          from: 'Focus English <no-reply@focus-on-english.com>',
           to: emailTrimmed,
           subject: '¡Gracias por tu interés en Focus English! 🎉',
           html: `
@@ -188,7 +188,7 @@ export async function POST(request: Request) {
         if (notificationEmail) {
           console.log('📧 Enviando notificación al admin:', notificationEmail);
           const adminEmailResult = await resend.emails.send({
-            from: 'Focus English Notifications <onboarding@resend.dev>',
+            from: 'Focus English Notifications <notifications@focus-on-english.com>',
             to: notificationEmail,
             subject: '🔔 Nuevo suscriptor en Focus English',
             html: `
