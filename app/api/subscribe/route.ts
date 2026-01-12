@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { Resend } from 'resend';
 
 export async function POST(request: Request) {
   try {
@@ -112,6 +113,122 @@ export async function POST(request: Request) {
     }
 
     console.log('✅ Email guardado exitosamente');
+
+    // ============================================
+    // ENVIAR EMAILS CON RESEND
+    // ============================================
+    
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const notificationEmail = process.env.NOTIFICATION_EMAIL;
+    
+    console.log('📧 RESEND_API_KEY existe:', !!resendApiKey);
+    console.log('📧 NOTIFICATION_EMAIL:', notificationEmail);
+    
+    if (resendApiKey) {
+      try {
+        const resend = new Resend(resendApiKey);
+        console.log('📧 Cliente Resend creado');
+        
+        // 1. Email de confirmación al usuario
+        console.log('📧 Enviando email al usuario:', emailTrimmed);
+        const userEmailResult = await resend.emails.send({
+          from: 'Focus English <onboarding@resend.dev>',
+          to: emailTrimmed,
+          subject: '¡Gracias por tu interés en Focus English! 🎉',
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <style>
+                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                .header { background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }
+                .button { display: inline-block; padding: 12px 30px; background: #7c3aed; color: white; text-decoration: none; border-radius: 8px; margin: 20px 0; }
+                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 14px; }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <h1>🎯 Focus English</h1>
+                  <p>Cursos de inglés especializados</p>
+                </div>
+                <div class="content">
+                  <h2>¡Gracias por registrarte! 🎉</h2>
+                  <p>Hola,</p>
+                  <p>Estamos emocionados de que te hayas registrado para recibir noticias sobre <strong>Focus English</strong>.</p>
+                  
+                  <p><strong>¿Qué puedes esperar?</strong></p>
+                  <ul>
+                    <li>✅ Cursos especializados para trabajar, viajar o exámenes oficiales</li>
+                    <li>⚡ Programas intensivos de 90 días con resultados medibles</li>
+                    <li>🌟 Metodología personalizada adaptada a tu nivel</li>
+                  </ul>
+                  
+                  <p>Te avisaremos tan pronto como lancemos oficialmente.</p>
+                  
+                  <div style="text-align: center;">
+                    <a href="https://www.focus-on-english.com" class="button">Visitar nuestro sitio web</a>
+                  </div>
+                </div>
+                <div class="footer">
+                  <p>© 2026 Focus English. Todos los derechos reservados.</p>
+                  <p>Has recibido este email porque te registraste en www.focus-on-english.com</p>
+                </div>
+              </div>
+            </body>
+            </html>
+          `
+        });
+        console.log('✅ Email al usuario enviado:', userEmailResult);
+
+        // 2. Email de notificación para ti (admin)
+        if (notificationEmail) {
+          console.log('📧 Enviando notificación al admin:', notificationEmail);
+          const adminEmailResult = await resend.emails.send({
+            from: 'Focus English Notifications <onboarding@resend.dev>',
+            to: notificationEmail,
+            subject: '🔔 Nuevo suscriptor en Focus English',
+            html: `
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <meta charset="utf-8">
+                <style>
+                  body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                  .container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f8f9fa; border-radius: 10px; }
+                  .info { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+                  .label { font-weight: bold; color: #7c3aed; }
+                </style>
+              </head>
+              <body>
+                <div class="container">
+                  <h2>🎉 Nuevo suscriptor registrado</h2>
+                  <div class="info">
+                    <p><span class="label">Email:</span> ${emailTrimmed}</p>
+                    <p><span class="label">Fecha:</span> ${new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })}</p>
+                    <p><span class="label">Fuente:</span> Página "Próximamente"</p>
+                  </div>
+                  <p>Este usuario está esperando el lanzamiento oficial de Focus English.</p>
+                  <p><a href="https://supabase.com/dashboard">Ver en Supabase →</a></p>
+                </div>
+              </body>
+              </html>
+            `
+          });
+          console.log('✅ Email al admin enviado:', adminEmailResult);
+        }
+
+        console.log('✅ Todos los emails enviados correctamente');
+      } catch (emailError: any) {
+        console.error('⚠️ Error al enviar emails (pero el registro fue exitoso):', emailError);
+        console.error('⚠️ Error details:', emailError.message);
+      }
+    } else {
+      console.log('ℹ️ RESEND_API_KEY no configurado - emails no enviados');
+    }
 
     return NextResponse.json(
       { 
