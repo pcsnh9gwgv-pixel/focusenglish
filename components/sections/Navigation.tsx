@@ -8,6 +8,7 @@ import { MenuIcon, XIcon } from "../ui/Icons";
 
 const navigation = [
   { name: "Cursos Especializados", href: "/cursos-especializados" },
+  { name: "Blog", href: "/blog" },
   { name: "Para Trabajar", href: "/trabajo" },
   { name: "Para Viajar", href: "/viajes" },
   { name: "Preparación de Exámenes", href: "/examenes" },
