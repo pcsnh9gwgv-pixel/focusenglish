@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BadgesCard } from "@/components/app/badges-card";
+import { BadgesCard } from "@/components/badges-card";
 import { useEffect, useMemo, useState } from "react";
 import { emailingWeek1 } from "@/lib/emailing-week1";
 import { loadLessonProgress } from "@/lib/lesson-progress";

@@ -2,13 +2,14 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 
 import {
   loadLessonProgress,
   markLessonCompleted,
   unmarkLessonCompleted,
+  type LessonProgress,
 } from "@/lib/lesson-progress";
 
 export function LessonCompletionBar({
@@ -18,18 +19,24 @@ export function LessonCompletionBar({
   slug: string;
   title?: string;
 }) {
-  const [completedMap, setCompletedMap] = useState<Record<string, string>>({});
+  const [completedMap, setCompletedMap] = useState<Record<string, LessonProgress>>({});
 
   useEffect(() => {
     const state = loadLessonProgress();
-    setCompletedMap(state.completed ?? {});
+    setCompletedMap(state.progressMap ?? {});
   }, []);
 
   const isCompleted = useMemo(() => Boolean(completedMap?.[slug]), [completedMap, slug]);
 
   function onToggle() {
-    const next = isCompleted ? unmarkLessonCompleted(slug) : markLessonCompleted(slug);
-    setCompletedMap(next.completed ?? {});
+    if (isCompleted) {
+      unmarkLessonCompleted(slug);
+    } else {
+      markLessonCompleted(slug);
+    }
+    // Reload state
+    const state = loadLessonProgress();
+    setCompletedMap(state.progressMap ?? {});
   }
 
   return (
@@ -53,7 +60,7 @@ export function LessonCompletionBar({
         </div>
 
         <div className="flex items-center gap-2">
-          <Badge tone={isCompleted ? "active" : "locked"}>
+          <Badge variant={isCompleted ? "success" : "default"}>
             {isCompleted ? "Completada" : "Pendiente"}
           </Badge>
 

@@ -26,9 +26,9 @@ export function PaperLayout({
         </header>
       )}
 
-<div style={{ maxWidth: 820, margin: "0 auto" }}>
-  <article className="fe-prose fe-paper">{children}</article>
-</div>
+      <div style={{ maxWidth: 820, margin: "0 auto" }}>
+        <article className="fe-prose fe-paper">{children}</article>
+      </div>
+    </div>
   );
 }
-

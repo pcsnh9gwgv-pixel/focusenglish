@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ExerciseCard } from "@/components/exercises/exercise-card";
+import { ExerciseCard } from "@/components/exercise-card";
 
 type Item = { id: string; text: string };
 
