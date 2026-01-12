@@ -36,7 +36,7 @@ export default function HomePage() {
               <ul className="space-y-2 text-sm text-slate-400">
                 <li><a href="#features" className="hover:text-white transition-colors">Características</a></li>
                 <li><a href="/pricing" className="hover:text-white transition-colors">Precios</a></li>
-                <li><a href="/diagnostico" className="hover:text-white transition-colors">Test de Nivel</a></li>
+                <li><a href="/placement-test" className="hover:text-white transition-colors">Test de Nivel</a></li>
                 <li><a href="#faq" className="hover:text-white transition-colors">Preguntas</a></li>
               </ul>
             </div>

@@ -172,8 +172,8 @@ export function EmailingRouteDashboard() {
         </ol>
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 14 }}>
-          <Link href="/diagnostico" style={{ color: "var(--fe-primary)", fontWeight: 900 }}>
-            Hacer diagnóstico →
+          <Link href="/placement-test" style={{ color: "var(--fe-primary)", fontWeight: 900 }}>
+            Hacer test de nivel →
           </Link>
           <Link href="/precios" style={{ color: "var(--fe-primary)", fontWeight: 900 }}>
             Ver precios →

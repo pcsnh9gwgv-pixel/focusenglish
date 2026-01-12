@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: ["/", "/blog/"],
         disallow: [
           // Público pero NO indexable
-          "/diagnostico",
+          "/placement-test",
           "/lecciondemuestra",
 
           // Premium / backend
