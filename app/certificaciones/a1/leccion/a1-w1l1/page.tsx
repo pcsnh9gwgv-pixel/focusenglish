@@ -112,6 +112,7 @@ export default function Lesson1Page() {
   const [points, setPoints] = useState(0)
   const [voicesLoaded, setVoicesLoaded] = useState(false)
   const [spellingCompleted, setSpellingCompleted] = useState(false)
+  const [isCheckingSpelling, setIsCheckingSpelling] = useState(false)
 
   const progressPercentage = Math.round((completedSections.size / 4) * 100)
 
@@ -161,11 +162,7 @@ export default function Lesson1Page() {
     const newPoints = correct * 25
     setPoints(points + newPoints)
     
-    if (correct === quizzes.length) {
-      setShowConfetti(true)
-      setTimeout(() => setShowConfetti(false), 3000)
-    }
-    
+    // No mostrar confeti aquí - solo en la finalización total
     const newCompleted = new Set(completedSections)
     newCompleted.add('exercises')
     setCompletedSections(newCompleted)
@@ -173,32 +170,45 @@ export default function Lesson1Page() {
 
   // Verificar deletreo
   const checkSpelling = () => {
+    // Prevenir múltiples clics mientras se procesa
+    if (isCheckingSpelling || spellingCompleted) return
+    
     const currentWord = spellingWords[currentExercise]
     const userInput = spellingInput.toUpperCase().replace(/\s+/g, '')
     
     if (userInput === currentWord.word) {
+      setIsCheckingSpelling(true)
       setSpellingFeedback('correct')
       setPoints(points + 10)
+      
       setTimeout(() => {
         setSpellingFeedback(null)
         setSpellingInput('')
+        
         if (currentExercise < spellingWords.length - 1) {
+          // Avanzar a la siguiente palabra
           setCurrentExercise(currentExercise + 1)
+          setIsCheckingSpelling(false)
         } else {
-          // Completar la sección de spelling
-          setSpellingCompleted(true)
+          // Última palabra completada - Finalizar ejercicio
           const newCompleted = new Set(completedSections)
           newCompleted.add('practice')
           setCompletedSections(newCompleted)
+          setSpellingCompleted(true)
+          setIsCheckingSpelling(false)
+          
+          // Mostrar confetti solo si se completaron todas las secciones
           if (newCompleted.size === 4) {
             setShowConfetti(true)
             setTimeout(() => setShowConfetti(false), 5000)
           }
         }
-      }, 2000)
+      }, 1500)
     } else {
       setSpellingFeedback('incorrect')
-      setTimeout(() => setSpellingFeedback(null), 2000)
+      setTimeout(() => {
+        setSpellingFeedback(null)
+      }, 1500)
     }
   }
 
@@ -773,10 +783,10 @@ export default function Lesson1Page() {
 
                       <button
                         onClick={checkSpelling}
-                        disabled={!spellingInput.trim()}
+                        disabled={!spellingInput.trim() || isCheckingSpelling || spellingCompleted}
                         className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-400 text-white py-4 rounded-lg font-bold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transform hover:scale-105"
                       >
-                        Verificar
+                        {isCheckingSpelling ? 'Verificando...' : 'Verificar'}
                       </button>
                     </div>
 
@@ -922,17 +932,20 @@ export default function Lesson1Page() {
             <div className="text-sm font-bold text-green-600 bg-green-100 px-4 py-2 rounded-lg">
               ⭐ {points} puntos
             </div>
-            <button 
-              onClick={() => {
-                const newCompleted = new Set(['intro', 'content', 'exercises', 'practice'])
-                setCompletedSections(newCompleted)
-                setPoints(points + 20)
-                setShowConfetti(true)
-              }}
-              className="bg-gradient-to-r from-amber-500 to-orange-400 hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-lg transform hover:scale-105"
-            >
-              ✓ Completar Lección
-            </button>
+            {/* Botón de debug - oculto en producción */}
+            {process.env.NODE_ENV === 'development' && (
+              <button 
+                onClick={() => {
+                  const newCompleted = new Set(['intro', 'content', 'exercises', 'practice'])
+                  setCompletedSections(newCompleted)
+                  setPoints(points + 20)
+                  setShowConfetti(true)
+                }}
+                className="bg-gradient-to-r from-amber-500 to-orange-400 hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold transition-all shadow-lg transform hover:scale-105"
+              >
+                ✓ Completar Lección (Debug)
+              </button>
+            )}
           </div>
         </div>
       </div>
