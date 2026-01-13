@@ -340,44 +340,79 @@ export default function Lesson2Page() {
     try {
       // Buscar la frase en los datos para obtener la URL del audio
       let audioUrl: string | undefined
+      let foundItem: any = null
       
-      // Normalizar la frase para búsqueda (eliminar corchetes, tomar primera opción antes de /)
-      const normalizedPhrase = phrase
-        .replace(/\[.*?\]/g, '...') // Reemplazar [texto] con ...
-        .split('/')[0] // Tomar solo la primera opción
-        .trim()
+      // Si la frase contiene "/", intentar con cada opción
+      const options = phrase.split('/').map(opt => opt.trim())
+      console.log('🔊 Opciones a buscar:', options, '(original:', phrase, ')')
       
-      console.log('🔊 Buscando audio para:', normalizedPhrase, '(original:', phrase, ')')
-      
-      // Buscar en todas las categorías con coincidencia flexible
-      for (const category of ['formal', 'informal', 'introductions', 'farewells'] as const) {
-        const found = greetingsData[category].find(item => {
-          // Coincidencia exacta
-          if (item.english === normalizedPhrase) return true
-          
-          // Coincidencia ignorando puntos y mayúsculas
-          const itemNormalized = item.english.replace(/[?.!]/g, '').toLowerCase()
-          const searchNormalized = normalizedPhrase.replace(/[?.!]/g, '').toLowerCase()
-          if (itemNormalized === searchNormalized) return true
-          
-          // Coincidencia parcial (la frase contiene el item o viceversa)
-          if (normalizedPhrase.toLowerCase().includes(item.english.toLowerCase()) ||
-              item.english.toLowerCase().includes(normalizedPhrase.toLowerCase())) {
-            return true
-          }
-          
-          return false
-        })
+      // Función de búsqueda flexible
+      const findAudioForPhrase = (searchPhrase: string) => {
+        // Normalizar la frase (eliminar corchetes, signos de exclamación, etc.)
+        const normalized = searchPhrase
+          .replace(/\[.*?\]/g, '...') // Reemplazar [texto] con ...
+          .replace(/[!?]/g, '') // Eliminar signos de exclamación y pregunta
+          .trim()
         
-        if (found && found.audioUrl) {
-          audioUrl = found.audioUrl
-          console.log('✅ Audio encontrado:', audioUrl, 'para categoría:', category)
+        console.log('  🔍 Buscando:', normalized)
+        
+        // Buscar en todas las categorías
+        for (const category of ['formal', 'informal', 'introductions', 'farewells'] as const) {
+          const found = greetingsData[category].find(item => {
+            const itemClean = item.english.replace(/[!?]/g, '').trim()
+            const normalizedClean = normalized.replace(/[!?]/g, '').trim()
+            
+            // Coincidencia exacta
+            if (itemClean.toLowerCase() === normalizedClean.toLowerCase()) {
+              console.log('    ✅ Coincidencia exacta:', item.english)
+              return true
+            }
+            
+            // Para casos como "I'm..." coincida con "I'm [your name]"
+            if (itemClean.toLowerCase().replace(/\.\.\./g, '').trim() === 
+                normalizedClean.toLowerCase().replace(/\.\.\./g, '').trim()) {
+              console.log('    ✅ Coincidencia sin puntos:', item.english)
+              return true
+            }
+            
+            // Coincidencia parcial para frases complejas
+            const itemWords = itemClean.toLowerCase().split(/\s+/)
+            const searchWords = normalizedClean.toLowerCase().split(/\s+/)
+            
+            // Si todos los palabras principales coinciden
+            if (searchWords.length >= 2 && itemWords.length >= 2) {
+              const commonWords = searchWords.filter(w => 
+                w.length > 2 && itemWords.includes(w)
+              )
+              if (commonWords.length >= Math.min(searchWords.length, itemWords.length) - 1) {
+                console.log('    ✅ Coincidencia por palabras:', item.english)
+                return true
+              }
+            }
+            
+            return false
+          })
+          
+          if (found) {
+            return { found, category }
+          }
+        }
+        return null
+      }
+      
+      // Intentar con cada opción hasta encontrar un audio
+      for (const option of options) {
+        const result = findAudioForPhrase(option)
+        if (result) {
+          foundItem = result.found
+          audioUrl = result.found.audioUrl
+          console.log('✅ Audio encontrado:', audioUrl, 'para opción:', option, 'en categoría:', result.category)
           break
         }
       }
       
-      if (!audioUrl) {
-        console.warn('❌ No se encontró audio para:', normalizedPhrase)
+      if (!audioUrl || !foundItem) {
+        console.warn('❌ No se encontró audio para ninguna opción de:', phrase)
         setPlayingAudio(null)
         return
       }
@@ -392,7 +427,7 @@ export default function Lesson2Page() {
       
       audio.onerror = () => {
         setPlayingAudio(null)
-        console.error('Error playing audio for phrase:', phrase)
+        console.error('Error playing audio for phrase:', phrase, 'audioUrl:', audioUrl)
       }
       
       await audio.play()
