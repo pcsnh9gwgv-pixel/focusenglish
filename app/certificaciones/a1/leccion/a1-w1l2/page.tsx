@@ -348,10 +348,19 @@ export default function Lesson2Page() {
       setRecordingResult(null)
       setRecordedAudioUrl(null)
       
+      // Verificar soporte de Web Speech API
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      
+      if (!SpeechRecognition) {
+        alert('Tu navegador no soporta reconocimiento de voz. Por favor usa Chrome o Edge.')
+        setRecognitionSupported(false)
+        return
+      }
+      
       // Solicitar permiso de micrófono
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       
-      // Crear MediaRecorder para grabar
+      // Crear MediaRecorder para grabar el audio (para reproducción posterior)
       const recorder = new MediaRecorder(stream)
       const chunks: Blob[] = []
       
@@ -361,28 +370,113 @@ export default function Lesson2Page() {
         }
       }
       
+      // Iniciar reconocimiento de voz EN PARALELO con la grabación
+      const recognition = new SpeechRecognition()
+      recognition.lang = 'en-US'
+      recognition.interimResults = false
+      recognition.maxAlternatives = 1
+      recognition.continuous = false
+      
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript
+        const confidence = event.results[0][0].confidence
+        
+        console.log('Transcript:', transcript)
+        console.log('Expected:', phrase)
+        
+        // Calcular similitud
+        const similarity = calculateSimilarity(phrase.toLowerCase(), transcript.toLowerCase())
+        const score = Math.round(similarity * 100)
+        
+        // Análisis palabra por palabra
+        const wordAnalysis = analyzeWords(phrase, transcript)
+        
+        // Generar feedback detallado
+        const { improvements, strengths } = generateFeedback(score, wordAnalysis, phrase, transcript)
+        
+        let feedback = ''
+        let bonusPoints = 0
+        
+        if (score >= 90) {
+          feedback = '🎉 ¡Excelente pronunciación! Perfecto.'
+          bonusPoints = 20
+        } else if (score >= 75) {
+          feedback = '👍 ¡Muy bien! Buena pronunciación.'
+          bonusPoints = 15
+        } else if (score >= 60) {
+          feedback = '😊 Bien. Sigue practicando.'
+          bonusPoints = 10
+        } else if (score >= 40) {
+          feedback = '🤔 Necesitas practicar más. Escucha el audio de referencia.'
+          bonusPoints = 5
+        } else {
+          feedback = '💪 Inténtalo de nuevo. Escucha bien la pronunciación correcta.'
+          bonusPoints = 0
+        }
+        
+        setRecordingResult({
+          transcript,
+          confidence,
+          score,
+          feedback,
+          wordAnalysis,
+          improvements,
+          strengths
+        })
+        
+        // Agregar puntos bonus
+        if (bonusPoints > 0) {
+          setPoints(prev => prev + bonusPoints)
+        }
+      }
+      
+      recognition.onerror = (event: any) => {
+        console.error('Error en reconocimiento:', event.error)
+        
+        let errorMessage = '❌ Error al procesar el audio.'
+        
+        if (event.error === 'no-speech') {
+          errorMessage = '🔇 No se detectó voz. Habla más alto o acércate al micrófono.'
+        } else if (event.error === 'audio-capture') {
+          errorMessage = '🎤 Error con el micrófono. Verifica los permisos.'
+        } else if (event.error === 'not-allowed') {
+          errorMessage = '🚫 Permiso de micrófono denegado. Actívalo en la configuración del navegador.'
+        }
+        
+        setRecordingResult({
+          transcript: '',
+          confidence: 0,
+          score: 0,
+          feedback: errorMessage,
+          wordAnalysis: [],
+          improvements: ['Intenta hablar más claro y cerca del micrófono', 'Verifica que el micrófono esté funcionando'],
+          strengths: []
+        })
+      }
+      
       recorder.onstop = async () => {
         // Detener todos los tracks del stream
         stream.getTracks().forEach(track => track.stop())
         
-        // Crear blob de audio
+        // Crear blob de audio para reproducción
         const audioBlob = new Blob(chunks, { type: 'audio/webm' })
-        
-        // Crear URL del audio grabado para poder reproducirlo
         const audioUrl = URL.createObjectURL(audioBlob)
         setRecordedAudioUrl(audioUrl)
         
-        // Evaluar pronunciación usando Web Speech API
-        await evaluatePronunciation(phrase, audioBlob)
+        console.log('Grabación guardada, URL:', audioUrl)
       }
       
+      // Iniciar ambos: grabación y reconocimiento
       setMediaRecorder(recorder)
       recorder.start()
+      recognition.start()
       setIsRecording(true)
+      
+      console.log('Grabación y reconocimiento iniciados...')
       
     } catch (error) {
       console.error('Error al iniciar grabación:', error)
-      alert('No se pudo acceder al micrófono. Por favor, permite el acceso al micrófono.')
+      alert('No se pudo acceder al micrófono. Por favor, permite el acceso al micrófono en la configuración del navegador.')
       setRecognitionSupported(false)
     }
   }
@@ -514,113 +608,7 @@ export default function Lesson2Page() {
     return { improvements, strengths }
   }
   
-  const evaluatePronunciation = async (expectedPhrase: string, audioBlob: Blob) => {
-    try {
-      // Usar Web Speech API para reconocimiento de voz
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
-      
-      if (!SpeechRecognition) {
-        setRecognitionSupported(false)
-        setRecordingResult({
-          transcript: '',
-          confidence: 0,
-          score: 0,
-          feedback: 'Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.',
-          wordAnalysis: [],
-          improvements: ['Usa Chrome o Edge para esta funcionalidad'],
-          strengths: []
-        })
-        return
-      }
-      
-      const recognition = new SpeechRecognition()
-      recognition.lang = 'en-US'
-      recognition.interimResults = false
-      recognition.maxAlternatives = 1
-      
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript
-        const confidence = event.results[0][0].confidence
-        
-        // Calcular similitud entre lo esperado y lo transcrito
-        const similarity = calculateSimilarity(expectedPhrase.toLowerCase(), transcript.toLowerCase())
-        const score = Math.round(similarity * 100)
-        
-        // Análisis palabra por palabra
-        const wordAnalysis = analyzeWords(expectedPhrase, transcript)
-        
-        // Generar feedback detallado
-        const { improvements, strengths } = generateFeedback(score, wordAnalysis, expectedPhrase, transcript)
-        
-        let feedback = ''
-        let bonusPoints = 0
-        
-        if (score >= 90) {
-          feedback = '🎉 ¡Excelente pronunciación! Perfecto.'
-          bonusPoints = 20
-        } else if (score >= 75) {
-          feedback = '👍 ¡Muy bien! Buena pronunciación.'
-          bonusPoints = 15
-        } else if (score >= 60) {
-          feedback = '😊 Bien. Sigue practicando.'
-          bonusPoints = 10
-        } else if (score >= 40) {
-          feedback = '🤔 Necesitas practicar más. Escucha el audio de referencia.'
-          bonusPoints = 5
-        } else {
-          feedback = '💪 Inténtalo de nuevo. Escucha bien la pronunciación correcta.'
-          bonusPoints = 0
-        }
-        
-        setRecordingResult({
-          transcript,
-          confidence,
-          score,
-          feedback,
-          wordAnalysis,
-          improvements,
-          strengths
-        })
-        
-        // Agregar puntos bonus
-        if (bonusPoints > 0) {
-          setPoints(prev => prev + bonusPoints)
-        }
-      }
-      
-      recognition.onerror = (event: any) => {
-        console.error('Error en reconocimiento:', event.error)
-        setRecordingResult({
-          transcript: '',
-          confidence: 0,
-          score: 0,
-          feedback: '❌ Error al procesar el audio. Intenta de nuevo.',
-          wordAnalysis: [],
-          improvements: ['Intenta hablar más claro y cerca del micrófono'],
-          strengths: []
-        })
-      }
-      
-      // Iniciar reconocimiento
-      recognition.start()
-      
-      // Reproducir el audio grabado para que el reconocedor lo procese
-      // Nota: En producción real, necesitarías enviar el audio a un servidor
-      // para procesarlo con una API más robusta como Google Cloud Speech-to-Text
-      
-    } catch (error) {
-      console.error('Error en evaluación:', error)
-      setRecordingResult({
-        transcript: '',
-        confidence: 0,
-        score: 0,
-        feedback: '❌ Error al evaluar. Intenta de nuevo.',
-        wordAnalysis: [],
-        improvements: ['Verifica que tu micrófono esté funcionando'],
-        strengths: []
-      })
-    }
-  }
+  // Esta función ya no es necesaria, el reconocimiento ocurre en startRecording
   
   // Calcular similitud entre dos strings (algoritmo de Levenshtein simplificado)
   const calculateSimilarity = (str1: string, str2: string): number => {
