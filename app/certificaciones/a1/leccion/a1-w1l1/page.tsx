@@ -112,10 +112,26 @@ export default function Lesson1Page() {
 
   const progressPercentage = Math.round((completedSections.size / 4) * 100)
 
-  // Simular reproducción de audio
+  // Reproducir audio de la letra usando Web Speech API
   const playSound = (letter: string) => {
     setPlayingAudio(letter)
-    setTimeout(() => setPlayingAudio(null), 1000)
+    
+    // Usar Web Speech API para pronunciar la letra
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(letter)
+      utterance.lang = 'en-US'
+      utterance.rate = 0.8 // Más lento para mejor comprensión
+      utterance.pitch = 1
+      
+      utterance.onend = () => {
+        setPlayingAudio(null)
+      }
+      
+      window.speechSynthesis.cancel() // Cancelar cualquier audio previo
+      window.speechSynthesis.speak(utterance)
+    } else {
+      setTimeout(() => setPlayingAudio(null), 1000)
+    }
   }
 
   // Verificar respuesta del quiz
@@ -393,30 +409,8 @@ export default function Lesson1Page() {
                 </p>
               </div>
 
-              {/* Filtros */}
-              <div className="flex gap-4 mb-6 flex-wrap">
-                <button 
-                  onClick={() => setSelectedLetter(null)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-semibold transition-colors"
-                >
-                  Ver Todas
-                </button>
-                <button 
-                  onClick={() => {/* Filter vowels */}}
-                  className="px-4 py-2 bg-blue-100 hover:bg-blue-200 rounded-lg font-semibold transition-colors"
-                >
-                  Solo Vocales (A, E, I, O, U)
-                </button>
-                <button 
-                  onClick={() => {/* Filter consonants */}}
-                  className="px-4 py-2 bg-green-100 hover:bg-green-200 rounded-lg font-semibold transition-colors"
-                >
-                  Solo Consonantes
-                </button>
-              </div>
-
-              {/* Alfabeto Grid */}
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-3 mb-8">
+              {/* Alfabeto Ultra Compacto - TODO visible siempre */}
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-9 gap-1.5 mb-6">
                 {alphabetData.map((item) => (
                   <button
                     key={item.letter}
@@ -424,77 +418,107 @@ export default function Lesson1Page() {
                       setSelectedLetter(item.letter)
                       playSound(item.letter)
                     }}
-                    className={`aspect-square rounded-xl font-bold text-2xl transition-all transform hover:scale-110 shadow-md ${
+                    className={`p-2 rounded-lg transition-all transform hover:scale-105 border ${
                       selectedLetter === item.letter
-                        ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white scale-110'
+                        ? 'bg-gradient-to-br from-amber-400 to-orange-500 text-white border-amber-600 scale-110 shadow-md'
                         : item.category === 'vowel'
-                        ? 'bg-gradient-to-br from-blue-100 to-blue-200 hover:from-blue-200 hover:to-blue-300 text-blue-900'
-                        : 'bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-900'
-                    } ${playingAudio === item.letter ? 'animate-pulse ring-4 ring-amber-500' : ''}`}
+                        ? 'bg-blue-50 hover:bg-blue-100 text-blue-900 border-blue-200'
+                        : 'bg-gray-50 hover:bg-gray-100 text-gray-900 border-gray-200'
+                    } ${playingAudio === item.letter ? 'animate-pulse ring-2 ring-amber-400' : ''}`}
                   >
-                    {item.letter}
+                    <div className="flex flex-col items-center">
+                      {/* Letra grande */}
+                      <span className="text-2xl font-black leading-none mb-0.5">{item.letter}</span>
+                      
+                      {/* IPA compacto */}
+                      <span className={`text-[9px] font-mono leading-none mb-0.5 ${
+                        selectedLetter === item.letter ? 'text-white/90' : 'text-violet-600'
+                      }`}>
+                        {item.ipa}
+                      </span>
+                      
+                      {/* Ejemplo en inglés - SIEMPRE VISIBLE */}
+                      <span className={`text-[10px] font-semibold leading-tight truncate w-full text-center ${
+                        selectedLetter === item.letter ? 'text-white' : 'text-gray-700'
+                      }`}>
+                        {item.example}
+                      </span>
+                      
+                      {/* Traducción español - SIEMPRE VISIBLE */}
+                      <span className={`text-[9px] leading-tight truncate w-full text-center ${
+                        selectedLetter === item.letter ? 'text-white/80' : 'text-gray-500'
+                      }`}>
+                        {item.exampleEs}
+                      </span>
+                      
+                      {/* Icono categoría */}
+                      {item.category === 'vowel' && (
+                        <span className="text-[8px] mt-0.5">🔵</span>
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
 
-              {/* Detalle de letra seleccionada */}
+              {/* Detalle de letra seleccionada - Más compacto */}
               {selectedLetter && (
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-8 rounded-xl border-2 border-amber-300 animate-slideIn">
-                  {(() => {
-                    const letter = alphabetData.find(l => l.letter === selectedLetter)!
-                    return (
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-5xl font-black text-amber-600">{letter.letter}</h3>
-                          <button
-                            onClick={() => playSound(letter.letter)}
-                            className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-400 text-white rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2 shadow-lg"
-                          >
-                            <span className="text-xl">🔊</span>
-                            Escuchar
-                          </button>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <div className="bg-white p-6 rounded-lg shadow-md">
-                            <p className="text-sm font-semibold text-gray-600 mb-2">Nombre de la letra:</p>
-                            <p className="text-3xl font-bold text-gray-900">{letter.name}</p>
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border-2 border-amber-300 animate-slideIn">
+                    {(() => {
+                      const letter = alphabetData.find(l => l.letter === selectedLetter)!
+                      return (
+                        <div className="flex flex-col md:flex-row items-center gap-6">
+                          <div className="flex-shrink-0">
+                            <div className="text-7xl font-black text-amber-600 bg-white rounded-2xl w-24 h-24 flex items-center justify-center shadow-lg">
+                              {letter.letter}
+                            </div>
                           </div>
+                          
+                          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                            <div className="bg-white p-4 rounded-lg shadow-md">
+                              <p className="text-xs font-semibold text-gray-500 mb-1">Pronunciación:</p>
+                              <p className="text-2xl font-bold text-gray-900">{letter.name}</p>
+                            </div>
 
-                          <div className="bg-white p-6 rounded-lg shadow-md">
-                            <p className="text-sm font-semibold text-gray-600 mb-2">Símbolo Fonético (IPA):</p>
-                            <p className="text-3xl font-bold text-purple-600 font-mono">{letter.ipa}</p>
+                            <div className="bg-white p-4 rounded-lg shadow-md">
+                              <p className="text-xs font-semibold text-gray-500 mb-1">IPA:</p>
+                              <p className="text-2xl font-bold text-purple-600 font-mono">{letter.ipa}</p>
+                            </div>
+
+                            <div className="bg-white p-4 rounded-lg shadow-md">
+                              <p className="text-xs font-semibold text-gray-500 mb-1">Ejemplo:</p>
+                              <p className="text-xl font-bold text-gray-900">{letter.example} <span className="text-gray-500 text-base">({letter.exampleEs})</span></p>
+                            </div>
+
+                            <div className="bg-white p-4 rounded-lg shadow-md flex items-center justify-between">
+                              <div>
+                                <p className="text-xs font-semibold text-gray-500 mb-1">Categoría:</p>
+                                <span className={`inline-block px-3 py-1 rounded-full font-bold text-sm ${
+                                  letter.category === 'vowel'
+                                    ? 'bg-blue-100 text-blue-700'
+                                    : 'bg-green-100 text-green-700'
+                                }`}>
+                                  {letter.category === 'vowel' ? '🔵 Vocal' : '🟢 Consonante'}
+                                </span>
+                              </div>
+                              <button
+                                onClick={() => playSound(letter.letter)}
+                                className="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-400 text-white rounded-lg font-bold hover:opacity-90 transition-all flex items-center gap-2 shadow-md"
+                              >
+                                <span className="text-lg">🔊</span>
+                                <span className="hidden sm:inline">Play</span>
+                              </button>
+                            </div>
                           </div>
                         </div>
-
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                          <p className="text-sm font-semibold text-gray-600 mb-2">Ejemplo:</p>
-                          <div className="flex items-center gap-4">
-                            <p className="text-2xl font-bold text-gray-900">{letter.example}</p>
-                            <span className="text-gray-400">→</span>
-                            <p className="text-xl text-gray-600">({letter.exampleEs})</p>
-                          </div>
-                        </div>
-
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                          <p className="text-sm font-semibold text-gray-600 mb-2">Categoría:</p>
-                          <span className={`inline-block px-4 py-2 rounded-full font-bold ${
-                            letter.category === 'vowel'
-                              ? 'bg-blue-100 text-blue-700'
-                              : 'bg-green-100 text-green-700'
-                          }`}>
-                            {letter.category === 'vowel' ? '🔵 Vocal' : '🟢 Consonante'}
-                          </span>
-                        </div>
-
-                        <div className="bg-blue-50 p-4 rounded-lg">
-                          <p className="text-sm text-blue-900">
-                            <strong>💡 Tip:</strong> Repite el sonido en voz alta 5 veces para memorizarlo mejor.
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  })()}
+                      )
+                    })()}
+                  </div>
+                  <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                    <p className="text-sm text-blue-900">
+                      <strong>💡 Tip:</strong> Haz clic en el botón 🔊 y repite el sonido en voz alta 5 veces para memorizarlo mejor.
+                    </p>
+                  </div>
                 </div>
               )}
 
