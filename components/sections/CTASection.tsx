@@ -39,7 +39,7 @@ export function CTASection() {
               Empieza Gratis →
             </Button>
             <Button
-              href="/diagnostico"
+              href="/placement-test"
               variant="outline"
               size="lg"
               className="w-full sm:w-auto border-white text-white hover:bg-white/10"

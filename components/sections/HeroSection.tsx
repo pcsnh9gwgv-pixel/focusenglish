@@ -42,7 +42,7 @@ export function HeroSection() {
             <Button href="/signup" size="lg" className="w-full sm:w-auto">
               Empieza Gratis →
             </Button>
-            <Button href="/diagnostico" variant="secondary" size="lg" className="w-full sm:w-auto">
+            <Button href="/placement-test" variant="secondary" size="lg" className="w-full sm:w-auto">
               Haz el Test de Nivel
             </Button>
           </div>

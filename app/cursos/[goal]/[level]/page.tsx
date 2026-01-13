@@ -60,7 +60,7 @@ export default function CursoLandingPage({ params }: { params: { goal: string; l
           Inscribirme ahora →
         </Link>
         <Link
-          href="/diagnostico"
+          href="/placement-test"
           className="inline-flex h-11 items-center justify-center rounded-[14px] border border-slate-200 bg-white px-5 text-sm font-black text-slate-800 hover:bg-slate-50"
         >
           Hacer test de nivel

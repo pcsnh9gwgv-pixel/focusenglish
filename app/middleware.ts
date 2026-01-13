@@ -3,7 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 
 const PUBLIC_ROUTES = new Set([
   "/",
-  "/diagnostico",
+  "/placement-test",
   "/lecciondemuestra",
 ]);
 
