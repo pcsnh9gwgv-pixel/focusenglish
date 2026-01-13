@@ -35,7 +35,7 @@ export default function CertificationDetailPage({ params }: { params: Params }) 
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 items-center">
             <div>
               <div className="inline-flex items-center rounded-full bg-white/20 backdrop-blur-sm px-4 py-2 text-sm font-black text-white mb-4">
-                Nivel {course.level} - {course.level === 'A2' ? 'Elementary' : course.level === 'B1' ? 'Intermediate' : course.level === 'B2' ? 'Upper-Intermediate' : course.level === 'C1' ? 'Advanced' : 'Proficiency'}
+                Nivel {course.level} - {course.level === 'A1' ? 'Beginner' : course.level === 'A2' ? 'Elementary' : course.level === 'B1' ? 'Intermediate' : course.level === 'B2' ? 'Upper-Intermediate' : course.level === 'C1' ? 'Advanced' : 'Proficiency'}
               </div>
               <h1 className="text-4xl font-black text-white sm:text-5xl mb-4">
                 {course.title}
@@ -289,6 +289,7 @@ export default function CertificationDetailPage({ params }: { params: Params }) 
 
 export async function generateStaticParams() {
   return [
+    { level: 'a1' },
     { level: 'a2' },
     { level: 'b1' },
     { level: 'b2' },

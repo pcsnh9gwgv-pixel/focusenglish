@@ -41,6 +41,292 @@ export interface CertificationCourse {
 }
 
 export const certificationCourses: Record<string, CertificationCourse> = {
+  a1: {
+    id: 'cert-a1',
+    title: 'Preparación Certificación A1',
+    description: 'Beginner - Inicia tu camino en el inglés',
+    level: 'A1',
+    duration: '6 semanas',
+    totalLessons: 24,
+    hoursPerWeek: '2-3 horas',
+    price: '149€',
+    color: 'amber',
+    gradient: 'from-amber-500 to-orange-400',
+    examFormat: {
+      listening: '20 minutos - 20 preguntas',
+      reading: '25 minutos - 25 preguntas',
+      writing: '25 minutos - 2 tareas',
+      speaking: '5-7 minutos - 2 partes'
+    },
+    passingScore: '100-120 puntos (Cambridge scale)',
+    weeks: [
+      {
+        week: 1,
+        title: 'Primeros Pasos en Inglés',
+        description: 'Introducción al idioma y conceptos básicos',
+        examSkills: ['Basic greetings', 'Personal information', 'Simple vocabulary'],
+        lessons: [
+          {
+            id: 'a1-w1l1',
+            title: 'El Alfabeto y Sonidos Básicos',
+            duration: '40 min',
+            type: 'vocabulary',
+            topics: ['Alphabet', 'Basic sounds', 'Phonetics', 'Spelling'],
+            activities: ['Pronunciation practice', 'Alphabet songs', 'Letter recognition'],
+            examFocus: 'Base fonética para comprensión y pronunciación'
+          },
+          {
+            id: 'a1-w1l2',
+            title: 'Saludos y Presentaciones',
+            duration: '45 min',
+            type: 'speaking',
+            topics: ['Greetings', 'Introductions', 'Basic phrases', 'Politeness'],
+            activities: ['Role-play exercises', 'Dialogue practice', 'Video examples'],
+            examFocus: 'Comunicación básica en situaciones cotidianas'
+          },
+          {
+            id: 'a1-w1l3',
+            title: 'Números y Datos Personales',
+            duration: '40 min',
+            type: 'vocabulary',
+            topics: ['Numbers 0-100', 'Age', 'Phone numbers', 'Addresses'],
+            activities: ['Counting games', 'Personal data forms', 'Listening exercises'],
+            examFocus: 'Información personal básica'
+          },
+          {
+            id: 'a1-w1l4',
+            title: 'Verbo "To Be" - Presente Simple',
+            duration: '50 min',
+            type: 'grammar',
+            topics: ['I am/You are', 'He/She is', 'Positive/negative', 'Questions'],
+            activities: ['Gap-fill exercises', 'Sentence building', 'Simple conversations'],
+            examFocus: 'Estructura gramatical fundamental'
+          }
+        ]
+      },
+      {
+        week: 2,
+        title: 'Vocabulario Cotidiano',
+        description: 'Palabras y frases de uso diario',
+        examSkills: ['Daily routines', 'Common objects', 'Simple questions'],
+        lessons: [
+          {
+            id: 'a1-w2l1',
+            title: 'La Familia y las Relaciones',
+            duration: '45 min',
+            type: 'vocabulary',
+            topics: ['Family members', 'Relationships', 'Possessive adjectives', 'Descriptions'],
+            activities: ['Family tree creation', 'Photo descriptions', 'Memory games'],
+            examFocus: 'Vocabulario de relaciones personales'
+          },
+          {
+            id: 'a1-w2l2',
+            title: 'Colores, Formas y Objetos',
+            duration: '40 min',
+            type: 'vocabulary',
+            topics: ['Colors', 'Shapes', 'Common objects', 'Classroom items'],
+            activities: ['Identification games', 'Description practice', 'Visual exercises'],
+            examFocus: 'Vocabulario visual básico'
+          },
+          {
+            id: 'a1-w2l3',
+            title: 'Presente Simple - Rutinas Diarias',
+            duration: '50 min',
+            type: 'grammar',
+            topics: ['Daily routines', 'Present simple', 'Time expressions', 'Frequency adverbs'],
+            activities: ['Schedule creation', 'Daily routine descriptions', 'Time practice'],
+            examFocus: 'Describir actividades habituales'
+          },
+          {
+            id: 'a1-w2l4',
+            title: 'Listening - Información Básica',
+            duration: '40 min',
+            type: 'listening',
+            topics: ['Simple dialogues', 'Personal information', 'Basic questions'],
+            activities: ['Audio exercises', 'Multiple choice', 'True/False questions'],
+            examFocus: 'Comprensión auditiva elemental'
+          }
+        ]
+      },
+      {
+        week: 3,
+        title: 'Lugares y Direcciones',
+        description: 'Ubicarse y moverse en el entorno',
+        examSkills: ['Locations', 'Directions', 'Prepositions of place'],
+        lessons: [
+          {
+            id: 'a1-w3l1',
+            title: 'La Casa y las Habitaciones',
+            duration: '45 min',
+            type: 'vocabulary',
+            topics: ['Rooms', 'Furniture', 'House vocabulary', 'There is/There are'],
+            activities: ['House plan creation', 'Descriptions', 'Prepositions practice'],
+            examFocus: 'Vocabulario del hogar'
+          },
+          {
+            id: 'a1-w3l2',
+            title: 'La Ciudad y Lugares Públicos',
+            duration: '45 min',
+            type: 'vocabulary',
+            topics: ['Public places', 'City vocabulary', 'Transportation', 'Asking directions'],
+            activities: ['Map reading', 'Direction giving', 'Location practice'],
+            examFocus: 'Orientación en la ciudad'
+          },
+          {
+            id: 'a1-w3l3',
+            title: 'Preposiciones de Lugar',
+            duration: '50 min',
+            type: 'grammar',
+            topics: ['In/on/at', 'Next to/between', 'In front of/behind', 'Location descriptions'],
+            activities: ['Position games', 'Picture descriptions', 'Gap-fill exercises'],
+            examFocus: 'Describir ubicaciones con precisión'
+          },
+          {
+            id: 'a1-w3l4',
+            title: 'Reading - Textos Simples',
+            duration: '40 min',
+            type: 'reading',
+            topics: ['Simple texts', 'Signs', 'Short messages', 'Basic comprehension'],
+            activities: ['Reading practice', 'Comprehension questions', 'Vocabulary building'],
+            examFocus: 'Lectura de textos básicos'
+          }
+        ]
+      },
+      {
+        week: 4,
+        title: 'Comida y Compras',
+        description: 'Vocabulario para situaciones de compra',
+        examSkills: ['Food vocabulary', 'Shopping phrases', 'Quantities'],
+        lessons: [
+          {
+            id: 'a1-w4l1',
+            title: 'Comida y Bebidas',
+            duration: '45 min',
+            type: 'vocabulary',
+            topics: ['Food items', 'Drinks', 'Meals', 'Likes and dislikes'],
+            activities: ['Menu reading', 'Food categorization', 'Preference expressions'],
+            examFocus: 'Vocabulario de alimentación'
+          },
+          {
+            id: 'a1-w4l2',
+            title: 'En el Restaurante y en la Tienda',
+            duration: '50 min',
+            type: 'speaking',
+            topics: ['Ordering food', 'Shopping dialogues', 'Prices', 'Can I have...?'],
+            activities: ['Role-plays', 'Ordering practice', 'Shopping scenarios'],
+            examFocus: 'Situaciones de compra y pedidos'
+          },
+          {
+            id: 'a1-w4l3',
+            title: 'Artículos y Plurales',
+            duration: '45 min',
+            type: 'grammar',
+            topics: ['A/an/the', 'Plural forms', 'Countable/uncountable', 'Some/any'],
+            activities: ['Classification exercises', 'Grammar practice', 'Context use'],
+            examFocus: 'Uso correcto de artículos'
+          },
+          {
+            id: 'a1-w4l4',
+            title: 'Writing - Mensajes Cortos',
+            duration: '45 min',
+            type: 'writing',
+            topics: ['Short notes', 'Simple messages', 'Basic sentences', 'Greetings'],
+            activities: ['Note writing', 'Message creation', 'Form filling'],
+            examFocus: 'Escritura de mensajes básicos'
+          }
+        ]
+      },
+      {
+        week: 5,
+        title: 'Tiempo y Actividades',
+        description: 'Expresar tiempo y describir actividades',
+        examSkills: ['Time expressions', 'Activities', 'Simple past'],
+        lessons: [
+          {
+            id: 'a1-w5l1',
+            title: 'La Hora y el Tiempo',
+            duration: '45 min',
+            type: 'vocabulary',
+            topics: ['Telling time', 'Days of the week', 'Months', 'Seasons', 'Weather'],
+            activities: ['Clock practice', 'Calendar activities', 'Weather descriptions'],
+            examFocus: 'Expresiones de tiempo'
+          },
+          {
+            id: 'a1-w5l2',
+            title: 'Actividades y Hobbies',
+            duration: '45 min',
+            type: 'vocabulary',
+            topics: ['Leisure activities', 'Sports', 'Hobbies', 'Free time'],
+            activities: ['Activity matching', 'Preference surveys', 'Speaking practice'],
+            examFocus: 'Vocabulario de ocio'
+          },
+          {
+            id: 'a1-w5l3',
+            title: 'Pasado Simple - Verbo "To Be"',
+            duration: '50 min',
+            type: 'grammar',
+            topics: ['Was/were', 'Past time expressions', 'Yesterday/last week', 'Ago'],
+            activities: ['Past descriptions', 'Timeline creation', 'Story telling'],
+            examFocus: 'Narrar eventos pasados simples'
+          },
+          {
+            id: 'a1-w5l4',
+            title: 'Mock Exam Parcial',
+            duration: '60 min',
+            type: 'mock-exam',
+            topics: ['All skills review', 'Partial exam', 'Self-assessment'],
+            activities: ['Practice test', 'Error identification', 'Feedback session'],
+            examFocus: 'Evaluación de progreso'
+          }
+        ]
+      },
+      {
+        week: 6,
+        title: 'Preparación Final',
+        description: 'Repaso y examen de práctica completo',
+        examSkills: ['Comprehensive review', 'Exam strategies', 'Confidence'],
+        lessons: [
+          {
+            id: 'a1-w6l1',
+            title: 'Repaso de Vocabulario Completo',
+            duration: '50 min',
+            type: 'vocabulary',
+            topics: ['All vocabulary topics', 'Key phrases', 'Common expressions'],
+            activities: ['Review games', 'Vocabulary quiz', 'Practical exercises'],
+            examFocus: 'Consolidar todo el vocabulario'
+          },
+          {
+            id: 'a1-w6l2',
+            title: 'Repaso de Gramática Esencial',
+            duration: '50 min',
+            type: 'grammar',
+            topics: ['To be', 'Present simple', 'Articles', 'Basic structures'],
+            activities: ['Grammar review', 'Mixed exercises', 'Error correction'],
+            examFocus: 'Repasar estructuras gramaticales'
+          },
+          {
+            id: 'a1-w6l3',
+            title: 'Mock Exam Completo A1',
+            duration: '90 min',
+            type: 'mock-exam',
+            topics: ['Full exam simulation', 'All skills', 'Time management'],
+            activities: ['Complete practice exam', 'Marking', 'Performance analysis'],
+            examFocus: 'Simulación completa del examen'
+          },
+          {
+            id: 'a1-w6l4',
+            title: 'Consejos y Preparación Final',
+            duration: '40 min',
+            type: 'exam-practice',
+            topics: ['Exam day tips', 'Stress management', 'Final advice'],
+            activities: ['Q&A session', 'Confidence building', 'Success strategies'],
+            examFocus: 'Preparación para el día del examen'
+          }
+        ]
+      }
+    ]
+  },
+
   a2: {
     id: 'cert-a2',
     title: 'Preparación Certificación A2',

@@ -3,6 +3,25 @@ import Image from "next/image";
 
 const certifications = [
   {
+    id: 'a1',
+    level: 'A1',
+    title: 'Preparación Certificación A1',
+    subtitle: 'Beginner - Inicia tu camino en el inglés',
+    duration: '6 semanas',
+    lessons: 24,
+    price: '149€',
+    color: 'amber',
+    gradient: 'from-amber-500 to-orange-400',
+    features: [
+      'Duración: 6 semanas',
+      'Nivel: A1 (Beginner)',
+      'Base sólida desde cero',
+      'Ideal para principiantes absolutos'
+    ],
+    badge: 'Desde cero',
+    imageUrl: 'https://www.genspark.ai/api/files/s/jZjn2JRH?cache_control=3600'
+  },
+  {
     id: 'a2',
     level: 'A2',
     title: 'Preparación Certificación A2',
