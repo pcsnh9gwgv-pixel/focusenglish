@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Navigation } from "@/components/sections/Navigation";
 import { marketingCourseData } from '@/content/courses/marketing/course-data';
 
@@ -287,9 +288,13 @@ export default function MarketingCoursePage() {
                                     </div>
 
                                     {/* Action Button */}
-                                    <button className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition-all">
+                                    <Link
+                                      href={`/cursos/marketing/leccion/${lesson.id}`}
+                                      className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition-all block text-center"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
                                       {isCompleted ? '✓ Completada - Revisar' : 'Comenzar Lección →'}
-                                    </button>
+                                    </Link>
                                   </div>
                                 </div>
                               </div>
