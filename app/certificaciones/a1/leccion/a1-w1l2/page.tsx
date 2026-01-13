@@ -1210,13 +1210,86 @@ export default function Lesson2Page() {
                         </ul>
                       </div>
                       
-                      <div className="bg-green-50 p-4 rounded-lg">
-                        <p className="font-semibold text-green-900 mb-2">💡 Respuestas sugeridas:</p>
-                        <ul className="space-y-2">
+                      <div className="bg-green-50 p-4 rounded-lg mb-4">
+                        <p className="font-semibold text-green-900 mb-3">💡 Respuestas sugeridas:</p>
+                        <div className="space-y-3">
                           {rolePlayScenarios[currentScenario].suggestedAnswers.map((answer, idx) => (
-                            <li key={idx} className="text-gray-700 font-mono text-sm">{answer}</li>
+                            <div key={idx} className="bg-white p-4 rounded-lg border-2 border-green-200">
+                              <div className="flex items-center justify-between mb-2">
+                                <p className="text-gray-700 font-mono text-sm flex-1">{answer}</p>
+                                <div className="flex gap-2">
+                                  <button
+                                    className="p-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all text-sm"
+                                    onClick={() => playSound(answer.split('/')[0].trim())}
+                                    title="Escuchar pronunciación"
+                                  >
+                                    🔊
+                                  </button>
+                                  <button
+                                    className={`p-2 rounded-lg transition-all text-sm ${
+                                      isRecording && selectedPhraseToRecord === answer
+                                        ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+                                        : 'bg-green-500 hover:bg-green-600'
+                                    } text-white`}
+                                    onClick={() => {
+                                      if (isRecording && selectedPhraseToRecord === answer) {
+                                        stopRecording()
+                                      } else if (!isRecording) {
+                                        startRecording(answer.split('/')[0].trim())
+                                      }
+                                    }}
+                                    title={isRecording && selectedPhraseToRecord === answer ? "Detener grabación" : "Grabar tu pronunciación"}
+                                  >
+                                    {isRecording && selectedPhraseToRecord === answer ? '⏹️' : '🎤'}
+                                  </button>
+                                </div>
+                              </div>
+                              
+                              {/* Resultado de grabación para role-play */}
+                              {recordingResult && selectedPhraseToRecord === answer.split('/')[0].trim() && (
+                                <div className={`mt-3 p-3 rounded-lg border-2 ${
+                                  recordingResult.score >= 75 
+                                    ? 'bg-green-50 border-green-500'
+                                    : recordingResult.score >= 60
+                                    ? 'bg-yellow-50 border-yellow-500'
+                                    : 'bg-red-50 border-red-500'
+                                }`}>
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="font-bold text-xs">Tu pronunciación:</span>
+                                    <span className={`text-xl font-black ${
+                                      recordingResult.score >= 75 
+                                        ? 'text-green-700'
+                                        : recordingResult.score >= 60
+                                        ? 'text-yellow-700'
+                                        : 'text-red-700'
+                                    }`}>
+                                      {recordingResult.score}%
+                                    </span>
+                                  </div>
+                                  <p className="text-xs italic mb-1">
+                                    Escuchamos: "{recordingResult.transcript}"
+                                  </p>
+                                  <p className="text-xs font-semibold">
+                                    {recordingResult.feedback}
+                                  </p>
+                                  {recordingResult.score >= 60 && (
+                                    <p className="text-xs text-green-600 mt-1">
+                                      +{recordingResult.score >= 90 ? 20 : recordingResult.score >= 75 ? 15 : 10} puntos ganados
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           ))}
-                        </ul>
+                        </div>
+                      </div>
+                      
+                      {/* Mensaje motivacional para practicar */}
+                      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                        <p className="text-sm text-blue-900">
+                          <strong>🎤 Practica en voz alta:</strong> Usa los botones 🔊 para escuchar y 🎤 para grabar tu pronunciación. 
+                          ¡Intenta lograr 90%+ en cada frase!
+                        </p>
                       </div>
                     </div>
                     
