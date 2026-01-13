@@ -111,6 +111,7 @@ export default function Lesson1Page() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [points, setPoints] = useState(0)
   const [voicesLoaded, setVoicesLoaded] = useState(false)
+  const [spellingCompleted, setSpellingCompleted] = useState(false)
 
   const progressPercentage = Math.round((completedSections.size / 4) * 100)
 
@@ -183,6 +184,16 @@ export default function Lesson1Page() {
         setSpellingInput('')
         if (currentExercise < spellingWords.length - 1) {
           setCurrentExercise(currentExercise + 1)
+        } else {
+          // Completar la sección de spelling
+          setSpellingCompleted(true)
+          const newCompleted = new Set(completedSections)
+          newCompleted.add('practice')
+          setCompletedSections(newCompleted)
+          if (newCompleted.size === 4) {
+            setShowConfetti(true)
+            setTimeout(() => setShowConfetti(false), 5000)
+          }
         }
       }, 2000)
     } else {
@@ -541,14 +552,6 @@ export default function Lesson1Page() {
                 </div>
               )}
 
-              <div className="mt-8 bg-green-50 border-l-4 border-green-600 p-6 rounded-r-lg">
-                <h3 className="font-bold text-green-900 mb-3">✅ Has Aprendido:</h3>
-                <p className="text-green-900">
-                  ¡Excelente! Ya conoces las 26 letras del alfabeto inglés y sus sonidos básicos. 
-                  Ahora vamos a practicar con ejercicios interactivos.
-                </p>
-              </div>
-
               <button
                 onClick={() => {
                   setActiveTab('exercises')
@@ -704,100 +707,199 @@ export default function Lesson1Page() {
                 Práctica de Deletreo (Spelling)
               </h2>
 
-              <div className="bg-purple-50 border-l-4 border-purple-600 p-6 rounded-r-lg mb-6">
-                <p className="text-purple-900 font-semibold mb-2">
-                  📖 Instrucciones:
-                </p>
-                <p className="text-purple-900">
-                  Deletrea cada palabra usando las letras del alfabeto inglés (sin espacios ni guiones). 
-                  Por ejemplo, para "CAT" escribe: <strong>CAT</strong>
-                </p>
-              </div>
-
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl border-2 border-blue-300 mb-6">
-                <div className="text-center mb-6">
-                  <p className="text-sm text-blue-600 font-semibold mb-2">
-                    Palabra {currentExercise + 1} de {spellingWords.length}
-                  </p>
-                  <div className="flex items-center justify-center gap-4 mb-4">
-                    <p className="text-4xl font-black text-gray-900">
-                      {spellingWords[currentExercise].spanish}
+              {!spellingCompleted ? (
+                <>
+                  <div className="bg-purple-50 border-l-4 border-purple-600 p-6 rounded-r-lg mb-6">
+                    <p className="text-purple-900 font-semibold mb-2">
+                      📖 Instrucciones:
                     </p>
-                    <span className={`px-4 py-1 rounded-full text-sm font-bold ${
-                      spellingWords[currentExercise].difficulty === 'easy' 
-                        ? 'bg-green-200 text-green-800'
-                        : spellingWords[currentExercise].difficulty === 'medium'
-                        ? 'bg-yellow-200 text-yellow-800'
-                        : 'bg-red-200 text-red-800'
-                    }`}>
-                      {spellingWords[currentExercise].difficulty.toUpperCase()}
-                    </span>
+                    <p className="text-purple-900">
+                      Deletrea cada palabra usando las letras del alfabeto inglés (sin espacios ni guiones). 
+                      Por ejemplo, para "CAT" escribe: <strong>CAT</strong>
+                    </p>
                   </div>
-                  <p className="text-gray-600">¿Cómo se escribe en inglés?</p>
-                </div>
 
-                <div className="max-w-md mx-auto">
-                  <input
-                    type="text"
-                    value={spellingInput}
-                    onChange={(e) => setSpellingInput(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && checkSpelling()}
-                    placeholder="Escribe aquí..."
-                    className={`w-full px-6 py-4 text-2xl font-bold text-center rounded-lg border-4 transition-all ${
-                      spellingFeedback === 'correct'
-                        ? 'border-green-500 bg-green-50'
-                        : spellingFeedback === 'incorrect'
-                        ? 'border-red-500 bg-red-50 animate-shake'
-                        : 'border-gray-300 focus:border-blue-500'
-                    }`}
-                  />
-
-                  {spellingFeedback === 'correct' && (
-                    <div className="mt-4 p-4 bg-green-100 border-2 border-green-500 rounded-lg text-center animate-slideIn">
-                      <p className="text-2xl font-bold text-green-700">✅ ¡Correcto!</p>
-                      <p className="text-green-600">+10 puntos</p>
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl border-2 border-blue-300 mb-6">
+                    <div className="text-center mb-6">
+                      <p className="text-sm text-blue-600 font-semibold mb-2">
+                        Palabra {currentExercise + 1} de {spellingWords.length}
+                      </p>
+                      <div className="flex items-center justify-center gap-4 mb-4">
+                        <p className="text-4xl font-black text-gray-900">
+                          {spellingWords[currentExercise].spanish}
+                        </p>
+                        <span className={`px-4 py-1 rounded-full text-sm font-bold ${
+                          spellingWords[currentExercise].difficulty === 'easy' 
+                            ? 'bg-green-200 text-green-800'
+                            : spellingWords[currentExercise].difficulty === 'medium'
+                            ? 'bg-yellow-200 text-yellow-800'
+                            : 'bg-red-200 text-red-800'
+                        }`}>
+                          {spellingWords[currentExercise].difficulty.toUpperCase()}
+                        </span>
+                      </div>
+                      <p className="text-gray-600">¿Cómo se escribe en inglés?</p>
                     </div>
-                  )}
 
-                  {spellingFeedback === 'incorrect' && (
-                    <div className="mt-4 p-4 bg-red-100 border-2 border-red-500 rounded-lg text-center animate-slideIn">
-                      <p className="text-2xl font-bold text-red-700">❌ Intenta de nuevo</p>
-                      <p className="text-red-600">Verifica tu deletreo</p>
+                    <div className="max-w-md mx-auto">
+                      <input
+                        type="text"
+                        value={spellingInput}
+                        onChange={(e) => setSpellingInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && checkSpelling()}
+                        placeholder="Escribe aquí..."
+                        className={`w-full px-6 py-4 text-2xl font-bold text-center rounded-lg border-4 transition-all ${
+                          spellingFeedback === 'correct'
+                            ? 'border-green-500 bg-green-50'
+                            : spellingFeedback === 'incorrect'
+                            ? 'border-red-500 bg-red-50 animate-shake'
+                            : 'border-gray-300 focus:border-blue-500'
+                        }`}
+                      />
+
+                      {spellingFeedback === 'correct' && (
+                        <div className="mt-4 p-4 bg-green-100 border-2 border-green-500 rounded-lg text-center animate-slideIn">
+                          <p className="text-2xl font-bold text-green-700">✅ ¡Correcto!</p>
+                          <p className="text-green-600">+10 puntos</p>
+                        </div>
+                      )}
+
+                      {spellingFeedback === 'incorrect' && (
+                        <div className="mt-4 p-4 bg-red-100 border-2 border-red-500 rounded-lg text-center animate-slideIn">
+                          <p className="text-2xl font-bold text-red-700">❌ Intenta de nuevo</p>
+                          <p className="text-red-600">Verifica tu deletreo</p>
+                        </div>
+                      )}
+
+                      <button
+                        onClick={checkSpelling}
+                        disabled={!spellingInput.trim()}
+                        className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-400 text-white py-4 rounded-lg font-bold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transform hover:scale-105"
+                      >
+                        Verificar
+                      </button>
                     </div>
-                  )}
 
-                  <button
-                    onClick={checkSpelling}
-                    disabled={!spellingInput.trim()}
-                    className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-400 text-white py-4 rounded-lg font-bold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transform hover:scale-105"
-                  >
-                    Verificar
-                  </button>
-                </div>
+                    <div className="mt-6 flex justify-center gap-2">
+                      {spellingWords.map((_, idx) => (
+                        <div
+                          key={idx}
+                          className={`w-3 h-3 rounded-full ${
+                            idx === currentExercise 
+                              ? 'bg-amber-500' 
+                              : idx < currentExercise 
+                              ? 'bg-green-500' 
+                              : 'bg-gray-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
 
-                <div className="mt-6 flex justify-center gap-2">
-                  {spellingWords.map((_, idx) => (
-                    <div
-                      key={idx}
-                      className={`w-3 h-3 rounded-full ${
-                        idx === currentExercise 
-                          ? 'bg-amber-500' 
-                          : idx < currentExercise 
-                          ? 'bg-green-500' 
-                          : 'bg-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
+                  <div className="bg-green-50 border-l-4 border-green-600 p-6 rounded-r-lg">
+                    <h3 className="font-bold text-green-900 mb-3">🎓 Consejo de Pronunciación:</h3>
+                    <p className="text-green-900">
+                      Cuando deletrees en inglés, pronuncia cada letra claramente. En el examen A1, 
+                      te pueden pedir que deletrees tu nombre, email o dirección. ¡Practica hasta que sea natural!
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Pantalla de finalización de lección */}
+                  <div className="space-y-6 animate-fadeIn">
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-12 rounded-xl border-4 border-green-500 text-center">
+                      <div className="text-8xl mb-6">🎉</div>
+                      <h3 className="text-4xl font-black text-green-900 mb-4">
+                        ¡Felicitaciones!
+                      </h3>
+                      <p className="text-2xl font-bold text-green-800 mb-6">
+                        Has completado la Lección 1: El Alfabeto y Sonidos Básicos
+                      </p>
+                      
+                      <div className="bg-white rounded-xl p-8 mb-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="text-center">
+                            <div className="text-5xl font-black text-amber-600 mb-2">{points}</div>
+                            <p className="text-gray-600 font-semibold">Puntos Totales</p>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-5xl font-black text-blue-600 mb-2">{progressPercentage}%</div>
+                            <p className="text-gray-600 font-semibold">Progreso Completado</p>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-5xl font-black text-purple-600 mb-2">4/4</div>
+                            <p className="text-gray-600 font-semibold">Secciones Completas</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
-              <div className="bg-green-50 border-l-4 border-green-600 p-6 rounded-r-lg">
-                <h3 className="font-bold text-green-900 mb-3">🎓 Consejo de Pronunciación:</h3>
-                <p className="text-green-900">
-                  Cuando deletrees en inglés, pronuncia cada letra claramente. En el examen A1, 
-                  te pueden pedir que deletrees tu nombre, email o dirección. ¡Practica hasta que sea natural!
-                </p>
-              </div>
+                    <div className="bg-blue-50 border-l-4 border-blue-600 p-6 rounded-r-lg">
+                      <h3 className="font-bold text-blue-900 mb-3">✅ Has Aprendido:</h3>
+                      <ul className="space-y-2 text-blue-900">
+                        <li className="flex items-start gap-2">
+                          <span className="text-xl">📝</span>
+                          <span>Las 26 letras del alfabeto inglés y sus sonidos básicos</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-xl">🔊</span>
+                          <span>La pronunciación correcta de cada letra con ejemplos</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-xl">🎯</span>
+                          <span>A deletrear palabras básicas en inglés</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-xl">📖</span>
+                          <span>La diferencia entre vocales y consonantes</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-purple-50 border-l-4 border-purple-600 p-6 rounded-r-lg">
+                      <h3 className="font-bold text-purple-900 mb-3">🚀 Próximos Pasos:</h3>
+                      <p className="text-purple-900 mb-4">
+                        Continúa con la Lección 2: Saludos y Presentaciones. Aprenderás a presentarte, 
+                        saludar y despedirte en diferentes situaciones.
+                      </p>
+                      <p className="text-purple-900 font-semibold">
+                        💡 Consejo: Practica deletrear tu nombre, email y dirección en inglés todos los días.
+                      </p>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <Link
+                        href="/certificaciones/a1"
+                        className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-4 rounded-lg font-bold transition-colors text-center"
+                      >
+                        ← Volver al Curso
+                      </Link>
+                      <button
+                        onClick={() => {
+                          // Reiniciar lección
+                          setActiveTab('intro')
+                          setSpellingCompleted(false)
+                          setCurrentExercise(0)
+                          setQuizSubmitted(false)
+                          setQuizAnswers({})
+                          setCompletedSections(new Set())
+                          setPoints(0)
+                        }}
+                        className="flex-1 bg-amber-500 hover:bg-amber-600 text-white py-4 rounded-lg font-bold transition-colors"
+                      >
+                        🔄 Repetir Lección
+                      </button>
+                      <button
+                        className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-lg font-bold hover:opacity-90 transition-all shadow-lg"
+                        onClick={() => alert('Próximamente: Lección 2')}
+                      >
+                        Siguiente Lección →
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )}
