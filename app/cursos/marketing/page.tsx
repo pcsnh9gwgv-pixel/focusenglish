@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Navigation } from "@/components/sections/Navigation";
 import { marketingCourseData } from '@/content/courses/marketing/course-data';
 
@@ -287,9 +288,21 @@ export default function MarketingCoursePage() {
                                     </div>
 
                                     {/* Action Button */}
-                                    <button className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition-all">
-                                      {isCompleted ? '✓ Completada - Revisar' : 'Comenzar Lección →'}
-                                    </button>
+                                    {lesson.id === 'w1l1' ? (
+                                      <Link 
+                                        href="/cursos/marketing/leccion/w1l1"
+                                        className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition-all block text-center"
+                                      >
+                                        {isCompleted ? '✓ Completada - Revisar' : 'Comenzar Lección →'}
+                                      </Link>
+                                    ) : (
+                                      <button 
+                                        disabled
+                                        className="mt-4 w-full bg-gradient-to-r from-gray-400 to-gray-500 text-white py-3 rounded-lg font-bold cursor-not-allowed opacity-60"
+                                      >
+                                        🔒 Próximamente
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               </div>
