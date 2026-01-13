@@ -357,7 +357,7 @@ export default function Lesson2Page() {
       
       // Reproducir el audio profesional
       const audio = new Audio(audioUrl)
-      audio.playbackRate = 1.0 // Los audios ya vienen con velocidad 0.7 óptima
+      audio.playbackRate = 0.85 // Velocidad reducida para mejor comprensión
       
       audio.onended = () => {
         setPlayingAudio(null)
