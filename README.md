@@ -19,6 +19,16 @@ Focus English es una plataforma educativa integral para aprendizaje de inglés, 
   - C1: 14 semanas, 56 lecciones (449€) - 6 semanas detalladas
   - C2: 16 semanas, 64 lecciones (599€) - 6 semanas detalladas
 
+### 🎤 Sistema de Grabación y Evaluación de Pronunciación (NUEVO)
+- **Lección 2 A1**: Sistema completo de speaking practice implementado
+- **18 frases con audio profesional**: Generado con ElevenLabs TTS
+- **Grabación de voz**: MediaRecorder API para capturar pronunciación del estudiante
+- **Evaluación automática**: Web Speech Recognition API + algoritmo de Levenshtein
+- **Feedback inmediato**: Puntuación 0-100% con consejos personalizados
+- **Sistema de puntos**: Bonus de 5-20 puntos según calidad de pronunciación
+- **Interfaz intuitiva**: Botones 🔊 (escuchar) y 🎤 (grabar) en cada frase
+- **Privacidad**: Todo procesado en el navegador, sin almacenar grabaciones
+
 ### 🎨 Mockups y Diseño
 - Landing page principal con héroe gradient
 - Cards individuales para cada nivel con colores distintivos
@@ -91,6 +101,9 @@ webapp/
 - **Base de datos**: Supabase (PostgreSQL)
 - **Autenticación**: NextAuth.js
 - **Deployment**: Vercel
+- **Audio TTS**: ElevenLabs Multilingual v2
+- **Speech Recognition**: Web Speech Recognition API
+- **Audio Recording**: MediaRecorder API
 
 ## 🚀 Desarrollo Local
 
@@ -178,6 +191,9 @@ Cada lección incluye:
 - `CURSOS_ESPECIALIZADOS.md` - Estructura de cursos profesionales
 - `CURSO_MARKETING_B2_COMPLETO.md` - Detalle curso marketing
 - `IMPLEMENTATION_SUMMARY.md` - Resumen de implementación
+- `SISTEMA_GRABACION_PRONUNCIACION.md` - ✨ Sistema de speaking practice con evaluación
+- `SISTEMA_SPEAKING_PRACTICE.md` - Documentación técnica del sistema de grabación
+- `LECCION_2_COMPLETADA.md` - Detalle completo de la lección 2 con sistema de grabación
 
 ## 🎓 Niveles CEFR Explicados
 
