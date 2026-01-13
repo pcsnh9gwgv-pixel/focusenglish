@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { certificationCourses } from "@/content/courses/certifications/course-data";
 import { notFound } from "next/navigation";
+import { use } from "react";
 
 type Params = {
   level: string;
 };
 
-export default function CertificationDetailPage({ params }: { params: Params }) {
-  const { level } = params;
+export default function CertificationDetailPage({ params }: { params: Promise<Params> }) {
+  const { level } = use(params);
   const course = certificationCourses[level];
 
   if (!course) {
