@@ -281,10 +281,20 @@ export default function Lesson2Page() {
     confidence: number
     score: number
     feedback: string
+    wordAnalysis: Array<{
+      word: string
+      expected: string
+      isCorrect: boolean
+      suggestion?: string
+    }>
+    improvements: string[]
+    strengths: string[]
   } | null>(null)
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
   const [audioChunks, setAudioChunks] = useState<Blob[]>([])
   const [recognitionSupported, setRecognitionSupported] = useState(true)
+  const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null)
+  const [isPlayingRecording, setIsPlayingRecording] = useState(false)
 
   const progressPercentage = Math.round((completedSections.size / 4) * 100)
 
@@ -336,6 +346,7 @@ export default function Lesson2Page() {
     try {
       setSelectedPhraseToRecord(phrase)
       setRecordingResult(null)
+      setRecordedAudioUrl(null)
       
       // Solicitar permiso de micrófono
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
@@ -356,6 +367,10 @@ export default function Lesson2Page() {
         
         // Crear blob de audio
         const audioBlob = new Blob(chunks, { type: 'audio/webm' })
+        
+        // Crear URL del audio grabado para poder reproducirlo
+        const audioUrl = URL.createObjectURL(audioBlob)
+        setRecordedAudioUrl(audioUrl)
         
         // Evaluar pronunciación usando Web Speech API
         await evaluatePronunciation(phrase, audioBlob)
@@ -379,6 +394,126 @@ export default function Lesson2Page() {
     }
   }
   
+  const playRecordedAudio = () => {
+    if (!recordedAudioUrl) return
+    
+    const audio = new Audio(recordedAudioUrl)
+    setIsPlayingRecording(true)
+    
+    audio.onended = () => {
+      setIsPlayingRecording(false)
+    }
+    
+    audio.onerror = () => {
+      setIsPlayingRecording(false)
+    }
+    
+    audio.play()
+  }
+  
+  const analyzeWords = (expected: string, transcript: string) => {
+    const expectedWords = expected.toLowerCase().split(' ').filter(w => w.length > 0)
+    const transcriptWords = transcript.toLowerCase().split(' ').filter(w => w.length > 0)
+    
+    const analysis: Array<{
+      word: string
+      expected: string
+      isCorrect: boolean
+      suggestion?: string
+    }> = []
+    
+    const maxLength = Math.max(expectedWords.length, transcriptWords.length)
+    
+    for (let i = 0; i < maxLength; i++) {
+      const expectedWord = expectedWords[i] || ''
+      const transcriptWord = transcriptWords[i] || ''
+      
+      if (!expectedWord && transcriptWord) {
+        analysis.push({
+          word: transcriptWord,
+          expected: '',
+          isCorrect: false,
+          suggestion: 'Palabra extra no esperada'
+        })
+      } else if (expectedWord && !transcriptWord) {
+        analysis.push({
+          word: '',
+          expected: expectedWord,
+          isCorrect: false,
+          suggestion: `Falta la palabra "${expectedWord}"`
+        })
+      } else {
+        const similarity = calculateSimilarity(expectedWord, transcriptWord)
+        const isCorrect = similarity > 0.8
+        
+        analysis.push({
+          word: transcriptWord,
+          expected: expectedWord,
+          isCorrect,
+          suggestion: !isCorrect ? `Dijiste "${transcriptWord}", esperado "${expectedWord}"` : undefined
+        })
+      }
+    }
+    
+    return analysis
+  }
+  
+  const generateFeedback = (score: number, wordAnalysis: any[], expected: string, transcript: string) => {
+    const improvements: string[] = []
+    const strengths: string[] = []
+    
+    // Análisis de fortalezas
+    const correctWords = wordAnalysis.filter(w => w.isCorrect).length
+    const totalWords = wordAnalysis.length
+    
+    if (correctWords === totalWords) {
+      strengths.push('✅ Pronunciaste todas las palabras correctamente')
+    } else if (correctWords > totalWords * 0.7) {
+      strengths.push(`✅ Pronunciaste correctamente ${correctWords} de ${totalWords} palabras`)
+    }
+    
+    if (score >= 90) {
+      strengths.push('✅ Excelente claridad en tu pronunciación')
+      strengths.push('✅ Entonación natural y fluida')
+    } else if (score >= 75) {
+      strengths.push('✅ Buena claridad en la pronunciación')
+    }
+    
+    // Análisis de áreas de mejora
+    const incorrectWords = wordAnalysis.filter(w => !w.isCorrect)
+    
+    if (incorrectWords.length > 0) {
+      improvements.push('📝 Palabras que necesitas practicar:')
+      incorrectWords.forEach(w => {
+        if (w.suggestion) {
+          improvements.push(`   • ${w.suggestion}`)
+        }
+      })
+    }
+    
+    if (score < 75) {
+      improvements.push('🎧 Escucha el audio de referencia varias veces')
+      improvements.push('🗣️ Practica pronunciando lentamente cada palabra')
+    }
+    
+    if (score < 60) {
+      improvements.push('📖 Repasa la pronunciación fonética de cada palabra')
+      improvements.push('🔄 Intenta grabar de nuevo después de escuchar el modelo')
+    }
+    
+    // Consejos específicos según patrones comunes
+    const expectedLower = expected.toLowerCase()
+    if (expectedLower.includes("what's") && !transcript.toLowerCase().includes("what")) {
+      improvements.push('💡 Tip: "What\'s" se pronuncia /wɒts/ (como "uots")')
+    }
+    
+    if (expectedLower.includes("you") && score < 80) {
+      improvements.push('💡 Tip: "You" se pronuncia /juː/ (como "iu" alargada)')
+    }
+    
+    return { improvements, strengths }
+  }
+  
   const evaluatePronunciation = async (expectedPhrase: string, audioBlob: Blob) => {
     try {
       // Usar Web Speech API para reconocimiento de voz
@@ -390,7 +525,10 @@ export default function Lesson2Page() {
           transcript: '',
           confidence: 0,
           score: 0,
-          feedback: 'Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.'
+          feedback: 'Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.',
+          wordAnalysis: [],
+          improvements: ['Usa Chrome o Edge para esta funcionalidad'],
+          strengths: []
         })
         return
       }
@@ -400,10 +538,6 @@ export default function Lesson2Page() {
       recognition.interimResults = false
       recognition.maxAlternatives = 1
       
-      // Crear un audio temporal del blob para reproducirlo en el reconocedor
-      const audioUrl = URL.createObjectURL(audioBlob)
-      const audio = new Audio(audioUrl)
-      
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript
         const confidence = event.results[0][0].confidence
@@ -411,6 +545,12 @@ export default function Lesson2Page() {
         // Calcular similitud entre lo esperado y lo transcrito
         const similarity = calculateSimilarity(expectedPhrase.toLowerCase(), transcript.toLowerCase())
         const score = Math.round(similarity * 100)
+        
+        // Análisis palabra por palabra
+        const wordAnalysis = analyzeWords(expectedPhrase, transcript)
+        
+        // Generar feedback detallado
+        const { improvements, strengths } = generateFeedback(score, wordAnalysis, expectedPhrase, transcript)
         
         let feedback = ''
         let bonusPoints = 0
@@ -436,15 +576,16 @@ export default function Lesson2Page() {
           transcript,
           confidence,
           score,
-          feedback
+          feedback,
+          wordAnalysis,
+          improvements,
+          strengths
         })
         
         // Agregar puntos bonus
         if (bonusPoints > 0) {
-          setPoints(points + bonusPoints)
+          setPoints(prev => prev + bonusPoints)
         }
-        
-        URL.revokeObjectURL(audioUrl)
       }
       
       recognition.onerror = (event: any) => {
@@ -453,9 +594,11 @@ export default function Lesson2Page() {
           transcript: '',
           confidence: 0,
           score: 0,
-          feedback: '❌ Error al procesar el audio. Intenta de nuevo.'
+          feedback: '❌ Error al procesar el audio. Intenta de nuevo.',
+          wordAnalysis: [],
+          improvements: ['Intenta hablar más claro y cerca del micrófono'],
+          strengths: []
         })
-        URL.revokeObjectURL(audioUrl)
       }
       
       // Iniciar reconocimiento
@@ -471,7 +614,10 @@ export default function Lesson2Page() {
         transcript: '',
         confidence: 0,
         score: 0,
-        feedback: '❌ Error al evaluar. Intenta de nuevo.'
+        feedback: '❌ Error al evaluar. Intenta de nuevo.',
+        wordAnalysis: [],
+        improvements: ['Verifica que tu micrófono esté funcionando'],
+        strengths: []
       })
     }
   }
@@ -889,18 +1035,32 @@ export default function Lesson2Page() {
                           </button>
                         </div>
                         
-                        {/* Resultado de grabación */}
+                        {/* Resultado de grabación con análisis detallado */}
                         {recordingResult && selectedPhraseToRecord === item.english && (
-                          <div className={`mt-3 p-4 rounded-lg border-2 ${
+                          <div className={`mt-3 p-5 rounded-xl border-2 shadow-md ${
                             recordingResult.score >= 75 
                               ? 'bg-green-50 border-green-500'
                               : recordingResult.score >= 60
                               ? 'bg-yellow-50 border-yellow-500'
                               : 'bg-red-50 border-red-500'
                           }`}>
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="font-bold text-sm">Tu pronunciación:</span>
-                              <span className={`text-2xl font-black ${
+                            {/* Botón para reproducir grabación */}
+                            {recordedAudioUrl && (
+                              <div className="mb-3 flex gap-2">
+                                <button
+                                  onClick={playRecordedAudio}
+                                  disabled={isPlayingRecording}
+                                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 text-sm font-semibold"
+                                >
+                                  {isPlayingRecording ? '🎵' : '🔊'} {isPlayingRecording ? 'Reproduciendo...' : 'Escuchar mi grabación'}
+                                </button>
+                              </div>
+                            )}
+                            
+                            {/* Puntuación principal */}
+                            <div className="flex items-center justify-between mb-3 pb-3 border-b-2 border-gray-200">
+                              <span className="font-bold text-base">Tu pronunciación:</span>
+                              <span className={`text-3xl font-black ${
                                 recordingResult.score >= 75 
                                   ? 'text-green-700'
                                   : recordingResult.score >= 60
@@ -910,16 +1070,72 @@ export default function Lesson2Page() {
                                 {recordingResult.score}%
                               </span>
                             </div>
-                            <p className="text-sm italic mb-2">
-                              Escuchamos: "{recordingResult.transcript}"
-                            </p>
-                            <p className="text-sm font-semibold">
+                            
+                            {/* Transcripción */}
+                            <div className="bg-white bg-opacity-60 p-3 rounded-lg mb-3">
+                              <p className="text-sm font-semibold text-gray-700 mb-1">📝 Lo que dijiste:</p>
+                              <p className="text-sm italic text-gray-900">"{recordingResult.transcript}"</p>
+                              <p className="text-xs text-gray-600 mt-1">Se esperaba: "{selectedPhraseToRecord}"</p>
+                            </div>
+                            
+                            {/* Análisis palabra por palabra */}
+                            {recordingResult.wordAnalysis && recordingResult.wordAnalysis.length > 0 && (
+                              <div className="bg-white bg-opacity-60 p-3 rounded-lg mb-3">
+                                <p className="text-sm font-semibold text-gray-700 mb-2">🔍 Análisis palabra por palabra:</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {recordingResult.wordAnalysis.map((word, idx) => (
+                                    <div
+                                      key={idx}
+                                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                        word.isCorrect
+                                          ? 'bg-green-100 text-green-800 border border-green-300'
+                                          : 'bg-red-100 text-red-800 border border-red-300'
+                                      }`}
+                                      title={word.suggestion || 'Correcto'}
+                                    >
+                                      {word.isCorrect ? '✓' : '✗'} {word.word || word.expected}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {/* Feedback principal */}
+                            <p className="text-sm font-semibold mb-3 text-gray-800">
                               {recordingResult.feedback}
                             </p>
+                            
+                            {/* Fortalezas */}
+                            {recordingResult.strengths && recordingResult.strengths.length > 0 && (
+                              <div className="bg-green-100 bg-opacity-70 p-3 rounded-lg mb-3">
+                                <p className="text-sm font-bold text-green-900 mb-1">💪 Lo que hiciste bien:</p>
+                                <ul className="text-xs text-green-800 space-y-1">
+                                  {recordingResult.strengths.map((strength, idx) => (
+                                    <li key={idx}>{strength}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            
+                            {/* Áreas de mejora */}
+                            {recordingResult.improvements && recordingResult.improvements.length > 0 && (
+                              <div className="bg-blue-100 bg-opacity-70 p-3 rounded-lg mb-3">
+                                <p className="text-sm font-bold text-blue-900 mb-1">📈 Cómo mejorar:</p>
+                                <ul className="text-xs text-blue-800 space-y-1">
+                                  {recordingResult.improvements.map((improvement, idx) => (
+                                    <li key={idx}>{improvement}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            
+                            {/* Puntos ganados */}
                             {recordingResult.score >= 60 && (
-                              <p className="text-xs text-green-600 mt-2">
-                                +{recordingResult.score >= 90 ? 20 : recordingResult.score >= 75 ? 15 : 10} puntos ganados
-                              </p>
+                              <div className="text-center">
+                                <p className="text-sm text-green-600 font-bold bg-green-100 py-2 px-4 rounded-full inline-block">
+                                  🎉 +{recordingResult.score >= 90 ? 20 : recordingResult.score >= 75 ? 15 : 10} puntos ganados
+                                </p>
+                              </div>
                             )}
                           </div>
                         )}
@@ -1245,18 +1461,32 @@ export default function Lesson2Page() {
                                 </div>
                               </div>
                               
-                              {/* Resultado de grabación para role-play */}
+                              {/* Resultado de grabación para role-play con análisis detallado */}
                               {recordingResult && selectedPhraseToRecord === answer.split('/')[0].trim() && (
-                                <div className={`mt-3 p-3 rounded-lg border-2 ${
+                                <div className={`mt-3 p-4 rounded-lg border-2 shadow-sm ${
                                   recordingResult.score >= 75 
                                     ? 'bg-green-50 border-green-500'
                                     : recordingResult.score >= 60
                                     ? 'bg-yellow-50 border-yellow-500'
                                     : 'bg-red-50 border-red-500'
                                 }`}>
-                                  <div className="flex items-center justify-between mb-2">
+                                  {/* Botón para reproducir grabación */}
+                                  {recordedAudioUrl && (
+                                    <div className="mb-2">
+                                      <button
+                                        onClick={playRecordedAudio}
+                                        disabled={isPlayingRecording}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 text-xs font-semibold"
+                                      >
+                                        {isPlayingRecording ? '🎵' : '🔊'} {isPlayingRecording ? 'Reproduciendo...' : 'Escuchar mi grabación'}
+                                      </button>
+                                    </div>
+                                  )}
+                                  
+                                  {/* Puntuación principal */}
+                                  <div className="flex items-center justify-between mb-2 pb-2 border-b border-gray-200">
                                     <span className="font-bold text-xs">Tu pronunciación:</span>
-                                    <span className={`text-xl font-black ${
+                                    <span className={`text-2xl font-black ${
                                       recordingResult.score >= 75 
                                         ? 'text-green-700'
                                         : recordingResult.score >= 60
@@ -1266,15 +1496,68 @@ export default function Lesson2Page() {
                                       {recordingResult.score}%
                                     </span>
                                   </div>
-                                  <p className="text-xs italic mb-1">
-                                    Escuchamos: "{recordingResult.transcript}"
-                                  </p>
-                                  <p className="text-xs font-semibold">
+                                  
+                                  {/* Transcripción */}
+                                  <div className="bg-white bg-opacity-70 p-2 rounded mb-2">
+                                    <p className="text-xs font-semibold text-gray-700">📝 Lo que dijiste:</p>
+                                    <p className="text-xs italic text-gray-900">"{recordingResult.transcript}"</p>
+                                  </div>
+                                  
+                                  {/* Análisis palabra por palabra */}
+                                  {recordingResult.wordAnalysis && recordingResult.wordAnalysis.length > 0 && (
+                                    <div className="bg-white bg-opacity-70 p-2 rounded mb-2">
+                                      <p className="text-xs font-semibold text-gray-700 mb-1">🔍 Análisis:</p>
+                                      <div className="flex flex-wrap gap-1">
+                                        {recordingResult.wordAnalysis.map((word, idx) => (
+                                          <div
+                                            key={idx}
+                                            className={`px-2 py-0.5 rounded-full text-xs ${
+                                              word.isCorrect
+                                                ? 'bg-green-100 text-green-800 border border-green-300'
+                                                : 'bg-red-100 text-red-800 border border-red-300'
+                                            }`}
+                                            title={word.suggestion || 'Correcto'}
+                                          >
+                                            {word.isCorrect ? '✓' : '✗'} {word.word || word.expected}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                  
+                                  {/* Feedback principal */}
+                                  <p className="text-xs font-semibold mb-2">
                                     {recordingResult.feedback}
                                   </p>
+                                  
+                                  {/* Fortalezas */}
+                                  {recordingResult.strengths && recordingResult.strengths.length > 0 && (
+                                    <div className="bg-green-100 bg-opacity-70 p-2 rounded mb-2">
+                                      <p className="text-xs font-bold text-green-900 mb-1">💪 Bien:</p>
+                                      <ul className="text-xs text-green-800 space-y-0.5">
+                                        {recordingResult.strengths.map((strength, idx) => (
+                                          <li key={idx} className="text-xs">{strength}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                  
+                                  {/* Áreas de mejora */}
+                                  {recordingResult.improvements && recordingResult.improvements.length > 0 && (
+                                    <div className="bg-blue-100 bg-opacity-70 p-2 rounded mb-2">
+                                      <p className="text-xs font-bold text-blue-900 mb-1">📈 Mejorar:</p>
+                                      <ul className="text-xs text-blue-800 space-y-0.5">
+                                        {recordingResult.improvements.slice(0, 3).map((improvement, idx) => (
+                                          <li key={idx} className="text-xs">{improvement}</li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+                                  
+                                  {/* Puntos ganados */}
                                   {recordingResult.score >= 60 && (
-                                    <p className="text-xs text-green-600 mt-1">
-                                      +{recordingResult.score >= 90 ? 20 : recordingResult.score >= 75 ? 15 : 10} puntos ganados
+                                    <p className="text-xs text-green-600 font-bold text-center bg-green-100 py-1 px-2 rounded">
+                                      🎉 +{recordingResult.score >= 90 ? 20 : recordingResult.score >= 75 ? 15 : 10} puntos
                                     </p>
                                   )}
                                 </div>
