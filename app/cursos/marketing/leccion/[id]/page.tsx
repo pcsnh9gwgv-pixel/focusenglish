@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import lesson1DataDetailed from '@/content/courses/marketing/lessons/week-1/lesson-1-digital-marketing-vocabulary'
 
-// Datos de la primera lección (versión simplificada para compatibilidad)
+// Datos de la primera lección
 const lesson1Data = {
   id: 'w1l1',
   week: 1,
