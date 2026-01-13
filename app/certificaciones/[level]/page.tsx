@@ -185,7 +185,11 @@ export default function CertificationDetailPage({ params }: { params: Promise<Pa
               {/* Lessons */}
               <div className="divide-y divide-gray-100">
                 {week.lessons.map((lesson, idx) => (
-                  <div key={lesson.id} className="p-6 hover:bg-gray-50 transition-colors">
+                  <Link 
+                    key={lesson.id} 
+                    href={`/certificaciones/${course.id.replace('cert-', '')}/leccion/${lesson.id}`}
+                    className="block p-6 hover:bg-gray-50 transition-colors"
+                  >
                     <div className="flex gap-6">
                       {/* Lesson Number */}
                       <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${course.gradient} text-white font-black text-lg`}>
@@ -195,7 +199,7 @@ export default function CertificationDetailPage({ params }: { params: Promise<Pa
                       <div className="flex-1">
                         <div className="flex items-start justify-between gap-4 mb-3">
                           <div>
-                            <h4 className="text-lg font-bold text-gray-900 mb-1">{lesson.title}</h4>
+                            <h4 className="text-lg font-bold text-gray-900 mb-1 hover:text-purple-600 transition-colors">{lesson.title}</h4>
                             <div className="flex items-center gap-3 text-sm text-gray-600">
                               <span className="flex items-center gap-1">
                                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -205,6 +209,9 @@ export default function CertificationDetailPage({ params }: { params: Promise<Pa
                               </span>
                               <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-700">
                                 {lesson.type}
+                              </span>
+                              <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
+                                Clic para acceder →
                               </span>
                             </div>
                           </div>
@@ -251,7 +258,7 @@ export default function CertificationDetailPage({ params }: { params: Promise<Pa
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
