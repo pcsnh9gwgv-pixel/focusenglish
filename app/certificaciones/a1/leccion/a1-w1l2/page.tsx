@@ -295,8 +295,43 @@ export default function Lesson2Page() {
   const [recognitionSupported, setRecognitionSupported] = useState(true)
   const [recordedAudioUrl, setRecordedAudioUrl] = useState<string | null>(null)
   const [isPlayingRecording, setIsPlayingRecording] = useState(false)
+  const [currentRecognition, setCurrentRecognition] = useState<any>(null)
+  const [currentStream, setCurrentStream] = useState<MediaStream | null>(null)
 
   const progressPercentage = Math.round((completedSections.size / 4) * 100)
+
+  // Limpiar recursos al desmontar el componente
+  useEffect(() => {
+    return () => {
+      // Detener reconocimiento si está activo
+      if (currentRecognition) {
+        try {
+          currentRecognition.stop()
+        } catch (e) {
+          console.log('Cleanup: Recognition already stopped')
+        }
+      }
+      
+      // Detener grabación si está activa
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        try {
+          mediaRecorder.stop()
+        } catch (e) {
+          console.log('Cleanup: MediaRecorder already stopped')
+        }
+      }
+      
+      // Detener stream
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop())
+      }
+      
+      // Liberar URL de audio
+      if (recordedAudioUrl) {
+        URL.revokeObjectURL(recordedAudioUrl)
+      }
+    }
+  }, [currentRecognition, mediaRecorder, currentStream, recordedAudioUrl])
 
   // Reproducir audio (por ahora simulado, luego agregaremos audios reales)
   const playSound = async (phrase: string) => {
@@ -344,9 +379,37 @@ export default function Lesson2Page() {
   // Sistema de grabación y evaluación de pronunciación
   const startRecording = async (phrase: string) => {
     try {
+      // LIMPIAR cualquier grabación/reconocimiento anterior
+      if (currentRecognition) {
+        try {
+          currentRecognition.stop()
+        } catch (e) {
+          console.log('Recognition already stopped')
+        }
+        setCurrentRecognition(null)
+      }
+      
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        try {
+          mediaRecorder.stop()
+        } catch (e) {
+          console.log('MediaRecorder already stopped')
+        }
+      }
+      
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop())
+        setCurrentStream(null)
+      }
+      
+      // Limpiar URL anterior
+      if (recordedAudioUrl) {
+        URL.revokeObjectURL(recordedAudioUrl)
+        setRecordedAudioUrl(null)
+      }
+      
       setSelectedPhraseToRecord(phrase)
       setRecordingResult(null)
-      setRecordedAudioUrl(null)
       
       // Verificar soporte de Web Speech API
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
@@ -359,6 +422,7 @@ export default function Lesson2Page() {
       
       // Solicitar permiso de micrófono
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      setCurrentStream(stream)
       
       // Crear MediaRecorder para grabar el audio (para reproducción posterior)
       const recorder = new MediaRecorder(stream)
@@ -370,14 +434,19 @@ export default function Lesson2Page() {
         }
       }
       
-      // Iniciar reconocimiento de voz EN PARALELO con la grabación
+      // Crear reconocimiento de voz
       const recognition = new SpeechRecognition()
       recognition.lang = 'en-US'
       recognition.interimResults = false
       recognition.maxAlternatives = 1
       recognition.continuous = false
       
+      let recognitionCompleted = false
+      
       recognition.onresult = (event: any) => {
+        if (recognitionCompleted) return
+        recognitionCompleted = true
+        
         const transcript = event.results[0][0].transcript
         const confidence = event.results[0][0].confidence
         
@@ -431,6 +500,9 @@ export default function Lesson2Page() {
       }
       
       recognition.onerror = (event: any) => {
+        if (recognitionCompleted) return
+        recognitionCompleted = true
+        
         console.error('Error en reconocimiento:', event.error)
         
         let errorMessage = '❌ Error al procesar el audio.'
@@ -441,6 +513,10 @@ export default function Lesson2Page() {
           errorMessage = '🎤 Error con el micrófono. Verifica los permisos.'
         } else if (event.error === 'not-allowed') {
           errorMessage = '🚫 Permiso de micrófono denegado. Actívalo en la configuración del navegador.'
+        } else if (event.error === 'aborted') {
+          // No mostrar error si fue abortado intencionalmente
+          console.log('Reconocimiento abortado (esperado al detener)')
+          return
         }
         
         setRecordingResult({
@@ -454,9 +530,13 @@ export default function Lesson2Page() {
         })
       }
       
+      recognition.onend = () => {
+        console.log('Recognition ended')
+        setCurrentRecognition(null)
+      }
+      
       recorder.onstop = async () => {
-        // Detener todos los tracks del stream
-        stream.getTracks().forEach(track => track.stop())
+        console.log('Recorder stopped, creating audio blob')
         
         // Crear blob de audio para reproducción
         const audioBlob = new Blob(chunks, { type: 'audio/webm' })
@@ -464,10 +544,18 @@ export default function Lesson2Page() {
         setRecordedAudioUrl(audioUrl)
         
         console.log('Grabación guardada, URL:', audioUrl)
+        
+        // Limpiar stream
+        if (currentStream) {
+          currentStream.getTracks().forEach(track => track.stop())
+          setCurrentStream(null)
+        }
       }
       
       // Iniciar ambos: grabación y reconocimiento
       setMediaRecorder(recorder)
+      setCurrentRecognition(recognition)
+      
       recorder.start()
       recognition.start()
       setIsRecording(true)
@@ -478,14 +566,40 @@ export default function Lesson2Page() {
       console.error('Error al iniciar grabación:', error)
       alert('No se pudo acceder al micrófono. Por favor, permite el acceso al micrófono en la configuración del navegador.')
       setRecognitionSupported(false)
+      
+      // Limpiar en caso de error
+      if (currentStream) {
+        currentStream.getTracks().forEach(track => track.stop())
+        setCurrentStream(null)
+      }
+      setIsRecording(false)
     }
   }
   
   const stopRecording = () => {
-    if (mediaRecorder && mediaRecorder.state === 'recording') {
-      mediaRecorder.stop()
-      setIsRecording(false)
+    console.log('Stopping recording...')
+    
+    // Detener reconocimiento
+    if (currentRecognition) {
+      try {
+        currentRecognition.stop()
+        console.log('Recognition stopped')
+      } catch (e) {
+        console.log('Recognition stop error:', e)
+      }
     }
+    
+    // Detener grabación
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      try {
+        mediaRecorder.stop()
+        console.log('MediaRecorder stopped')
+      } catch (e) {
+        console.log('MediaRecorder stop error:', e)
+      }
+    }
+    
+    setIsRecording(false)
   }
   
   const playRecordedAudio = () => {
