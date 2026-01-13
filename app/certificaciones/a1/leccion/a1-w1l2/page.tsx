@@ -378,11 +378,16 @@ export default function Lesson2Page() {
 
   // Sistema de grabación y evaluación de pronunciación
   const startRecording = async (phrase: string) => {
+    console.log('🎤 INICIANDO GRABACIÓN')
+    console.log('📝 Frase esperada:', phrase)
+    console.log('📍 Ubicación:', selectedPhraseToRecord ? 'Repetición' : 'Nueva grabación')
+    
     try {
       // LIMPIAR cualquier grabación/reconocimiento anterior
       if (currentRecognition) {
         try {
           currentRecognition.stop()
+          console.log('🛑 Recognition anterior detenido')
         } catch (e) {
           console.log('Recognition already stopped')
         }
@@ -392,6 +397,7 @@ export default function Lesson2Page() {
       if (mediaRecorder && mediaRecorder.state !== 'inactive') {
         try {
           mediaRecorder.stop()
+          console.log('🛑 MediaRecorder anterior detenido')
         } catch (e) {
           console.log('MediaRecorder already stopped')
         }
@@ -450,8 +456,10 @@ export default function Lesson2Page() {
         const transcript = event.results[0][0].transcript
         const confidence = event.results[0][0].confidence
         
-        console.log('Transcript:', transcript)
-        console.log('Expected:', phrase)
+        console.log('✅ EVALUACIÓN INICIADA')
+        console.log('📝 Transcript:', transcript)
+        console.log('🎯 Expected:', phrase)
+        console.log('🔊 Confidence:', confidence)
         
         // Calcular similitud
         const similarity = calculateSimilarity(phrase.toLowerCase(), transcript.toLowerCase())
@@ -483,7 +491,7 @@ export default function Lesson2Page() {
           bonusPoints = 0
         }
         
-        setRecordingResult({
+        const result = {
           transcript,
           confidence,
           score,
@@ -491,11 +499,16 @@ export default function Lesson2Page() {
           wordAnalysis,
           improvements,
           strengths
-        })
+        }
+        
+        console.log('✅ RESULTADO GENERADO:', result)
+        setRecordingResult(result)
+        console.log('✅ RESULTADO GUARDADO EN ESTADO')
         
         // Agregar puntos bonus
         if (bonusPoints > 0) {
           setPoints(prev => prev + bonusPoints)
+          console.log('🎉 Puntos agregados:', bonusPoints)
         }
       }
       
@@ -1146,19 +1159,6 @@ export default function Lesson2Page() {
                               ? 'bg-yellow-50 border-yellow-500'
                               : 'bg-red-50 border-red-500'
                           }`}>
-                            {/* Botón para reproducir grabación */}
-                            {recordedAudioUrl && (
-                              <div className="mb-3 flex gap-2">
-                                <button
-                                  onClick={playRecordedAudio}
-                                  disabled={isPlayingRecording}
-                                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 text-sm font-semibold"
-                                >
-                                  {isPlayingRecording ? '🎵' : '🔊'} {isPlayingRecording ? 'Reproduciendo...' : 'Escuchar mi grabación'}
-                                </button>
-                              </div>
-                            )}
-                            
                             {/* Puntuación principal */}
                             <div className="flex items-center justify-between mb-3 pb-3 border-b-2 border-gray-200">
                               <span className="font-bold text-base">Tu pronunciación:</span>
@@ -1531,40 +1531,61 @@ export default function Lesson2Page() {
                       <div className="bg-green-50 p-4 rounded-lg mb-4">
                         <p className="font-semibold text-green-900 mb-3">💡 Respuestas sugeridas:</p>
                         <div className="space-y-3">
-                          {rolePlayScenarios[currentScenario].suggestedAnswers.map((answer, idx) => (
+                          {rolePlayScenarios[currentScenario].suggestedAnswers.map((answer, idx) => {
+                            // Extraer la primera opción como frase principal
+                            const mainPhrase = answer.split('/')[0].trim()
+                            console.log('🎭 Role-play phrase:', mainPhrase)
+                            
+                            return (
                             <div key={idx} className="bg-white p-4 rounded-lg border-2 border-green-200">
                               <div className="flex items-center justify-between mb-2">
                                 <p className="text-gray-700 font-mono text-sm flex-1">{answer}</p>
                                 <div className="flex gap-2">
                                   <button
                                     className="p-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-all text-sm"
-                                    onClick={() => playSound(answer.split('/')[0].trim())}
+                                    onClick={() => {
+                                      console.log('🔊 Playing sound for:', mainPhrase)
+                                      playSound(mainPhrase)
+                                    }}
                                     title="Escuchar pronunciación"
                                   >
                                     🔊
                                   </button>
                                   <button
                                     className={`p-2 rounded-lg transition-all text-sm ${
-                                      isRecording && selectedPhraseToRecord === answer
+                                      isRecording && selectedPhraseToRecord === mainPhrase
                                         ? 'bg-red-500 hover:bg-red-600 animate-pulse'
                                         : 'bg-green-500 hover:bg-green-600'
                                     } text-white`}
                                     onClick={() => {
-                                      if (isRecording && selectedPhraseToRecord === answer) {
+                                      console.log('🎤 Button clicked. isRecording:', isRecording, 'selectedPhrase:', selectedPhraseToRecord, 'mainPhrase:', mainPhrase)
+                                      if (isRecording && selectedPhraseToRecord === mainPhrase) {
+                                        console.log('⏹️ Stopping recording')
                                         stopRecording()
                                       } else if (!isRecording) {
-                                        startRecording(answer.split('/')[0].trim())
+                                        console.log('🎤 Starting recording for:', mainPhrase)
+                                        startRecording(mainPhrase)
                                       }
                                     }}
-                                    title={isRecording && selectedPhraseToRecord === answer ? "Detener grabación" : "Grabar tu pronunciación"}
+                                    title={isRecording && selectedPhraseToRecord === mainPhrase ? "Detener grabación" : "Grabar tu pronunciación"}
                                   >
-                                    {isRecording && selectedPhraseToRecord === answer ? '⏹️' : '🎤'}
+                                    {isRecording && selectedPhraseToRecord === mainPhrase ? '⏹️' : '🎤'}
                                   </button>
                                 </div>
                               </div>
                               
                               {/* Resultado de grabación para role-play con análisis detallado */}
-                              {recordingResult && selectedPhraseToRecord === answer.split('/')[0].trim() && (
+                              {(() => {
+                                const shouldShow = recordingResult && selectedPhraseToRecord === mainPhrase
+                                console.log('🔍 Role-play result check:', {
+                                  hasResult: !!recordingResult,
+                                  selectedPhrase: selectedPhraseToRecord,
+                                  mainPhrase: mainPhrase,
+                                  shouldShow: shouldShow,
+                                  score: recordingResult?.score
+                                })
+                                return shouldShow
+                              })() && recordingResult && (
                                 <div className={`mt-3 p-4 rounded-lg border-2 shadow-sm ${
                                   recordingResult.score >= 75 
                                     ? 'bg-green-50 border-green-500'
@@ -1665,7 +1686,8 @@ export default function Lesson2Page() {
                                 </div>
                               )}
                             </div>
-                          ))}
+                            )
+                          })}
                         </div>
                       </div>
                       
