@@ -288,21 +288,13 @@ export default function MarketingCoursePage() {
                                     </div>
 
                                     {/* Action Button */}
-                                    {lesson.id === 'w1l1' ? (
-                                      <Link 
-                                        href="/cursos/marketing/leccion/w1l1"
-                                        className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition-all block text-center"
-                                      >
-                                        {isCompleted ? '✓ Completada - Revisar' : 'Comenzar Lección →'}
-                                      </Link>
-                                    ) : (
-                                      <button 
-                                        disabled
-                                        className="mt-4 w-full bg-gradient-to-r from-gray-400 to-gray-500 text-white py-3 rounded-lg font-bold cursor-not-allowed opacity-60"
-                                      >
-                                        🔒 Próximamente
-                                      </button>
-                                    )}
+                                    <Link
+                                      href={`/cursos/marketing/leccion/${lesson.id}`}
+                                      className="mt-4 w-full bg-gradient-to-r from-violet-600 to-purple-600 text-white py-3 rounded-lg font-bold hover:shadow-lg transition-all block text-center"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      {isCompleted ? '✓ Completada - Revisar' : 'Comenzar Lección →'}
+                                    </Link>
                                   </div>
                                 </div>
                               </div>
