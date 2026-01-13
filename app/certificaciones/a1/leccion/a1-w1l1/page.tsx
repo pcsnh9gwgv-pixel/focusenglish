@@ -4,17 +4,18 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 // Datos pedagógicos del alfabeto con IPA (International Phonetic Alphabet)
+// Audios profesionales con velocidad 0.7 (pausados para aprendizaje óptimo)
 const alphabetData = [
-  { letter: 'A', name: 'ei', ipa: '/eɪ/', example: 'Apple', exampleEs: 'Manzana', category: 'vowel' },
-  { letter: 'B', name: 'bi', ipa: '/biː/', example: 'Book', exampleEs: 'Libro', category: 'consonant' },
-  { letter: 'C', name: 'si', ipa: '/siː/', example: 'Cat', exampleEs: 'Gato', category: 'consonant' },
-  { letter: 'D', name: 'di', ipa: '/diː/', example: 'Dog', exampleEs: 'Perro', category: 'consonant' },
-  { letter: 'E', name: 'i', ipa: '/iː/', example: 'Egg', exampleEs: 'Huevo', category: 'vowel' },
-  { letter: 'F', name: 'ef', ipa: '/ɛf/', example: 'Fish', exampleEs: 'Pez', category: 'consonant' },
-  { letter: 'G', name: 'yi', ipa: '/dʒiː/', example: 'Girl', exampleEs: 'Niña', category: 'consonant' },
-  { letter: 'H', name: 'eich', ipa: '/eɪtʃ/', example: 'House', exampleEs: 'Casa', category: 'consonant' },
-  { letter: 'I', name: 'ai', ipa: '/aɪ/', example: 'Ice', exampleEs: 'Hielo', category: 'vowel' },
-  { letter: 'J', name: 'yei', ipa: '/dʒeɪ/', example: 'Juice', exampleEs: 'Jugo', category: 'consonant' },
+  { letter: 'A', name: 'ei', ipa: '/eɪ/', example: 'Apple', exampleEs: 'Manzana', category: 'vowel', audioUrl: 'https://www.genspark.ai/api/files/s/HdirrccQ' },
+  { letter: 'B', name: 'bi', ipa: '/biː/', example: 'Book', exampleEs: 'Libro', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/U6XrsAMc' },
+  { letter: 'C', name: 'si', ipa: '/siː/', example: 'Cat', exampleEs: 'Gato', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/afAxDAV0' },
+  { letter: 'D', name: 'di', ipa: '/diː/', example: 'Dog', exampleEs: 'Perro', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/mcWrpf1L' },
+  { letter: 'E', name: 'i', ipa: '/iː/', example: 'Egg', exampleEs: 'Huevo', category: 'vowel', audioUrl: 'https://www.genspark.ai/api/files/s/Z5gVYMND' },
+  { letter: 'F', name: 'ef', ipa: '/ɛf/', example: 'Fish', exampleEs: 'Pez', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/NxOl1jFU' },
+  { letter: 'G', name: 'yi', ipa: '/dʒiː/', example: 'Girl', exampleEs: 'Niña', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/TyNXoWru' },
+  { letter: 'H', name: 'eich', ipa: '/eɪtʃ/', example: 'House', exampleEs: 'Casa', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/0VQLJV7v' },
+  { letter: 'I', name: 'ai', ipa: '/aɪ/', example: 'Ice', exampleEs: 'Hielo', category: 'vowel', audioUrl: 'https://www.genspark.ai/api/files/s/eqoUcIhp' },
+  { letter: 'J', name: 'yei', ipa: '/dʒeɪ/', example: 'Juice', exampleEs: 'Jugo', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/fitGtK0x' },
   { letter: 'K', name: 'kei', ipa: '/keɪ/', example: 'King', exampleEs: 'Rey', category: 'consonant' },
   { letter: 'L', name: 'el', ipa: '/ɛl/', example: 'Lion', exampleEs: 'León', category: 'consonant' },
   { letter: 'M', name: 'em', ipa: '/ɛm/', example: 'Mouse', exampleEs: 'Ratón', category: 'consonant' },
@@ -113,77 +114,42 @@ export default function Lesson1Page() {
 
   const progressPercentage = Math.round((completedSections.size / 4) * 100)
 
-  // Cargar voces al iniciar el componente
-  useEffect(() => {
-    if ('speechSynthesis' in window) {
-      // Las voces pueden tardar en cargar
-      const loadVoices = () => {
-        const voices = window.speechSynthesis.getVoices()
-        if (voices.length > 0) {
-          setVoicesLoaded(true)
-        }
-      }
-      
-      // Intentar cargar inmediatamente
-      loadVoices()
-      
-      // También escuchar el evento de cuando las voces estén disponibles
-      window.speechSynthesis.onvoiceschanged = loadVoices
-    }
-  }, [])
-
-  // Reproducir audio de la letra usando Web Speech API con voz natural
-  const playSound = (letter: string) => {
+  // Reproducir audio profesional de alta calidad
+  const playSound = async (letter: string) => {
     setPlayingAudio(letter)
     
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel() // Cancelar cualquier audio previo
-      
+    try {
       // Buscar la letra en los datos
       const letterData = alphabetData.find(l => l.letter === letter)
-      if (!letterData) return
+      if (!letterData) {
+        setPlayingAudio(null)
+        return
+      }
       
-      // Obtener voces disponibles
-      const voices = window.speechSynthesis.getVoices()
-      
-      // Buscar una voz femenina en inglés US (más clara para aprendizaje)
-      let selectedVoice = voices.find(voice => 
-        voice.lang === 'en-US' && voice.name.includes('Female')
-      ) || voices.find(voice => 
-        voice.lang === 'en-US' || voice.lang.startsWith('en')
-      ) || voices[0]
-      
-      // Pronunciar primero la letra
-      const letterUtterance = new SpeechSynthesisUtterance(letter)
-      letterUtterance.lang = 'en-US'
-      letterUtterance.rate = 0.7
-      letterUtterance.pitch = 1
-      letterUtterance.volume = 1
-      if (selectedVoice) letterUtterance.voice = selectedVoice
-      
-      // Después pronunciar la palabra de ejemplo
-      const wordUtterance = new SpeechSynthesisUtterance(letterData.example)
-      wordUtterance.lang = 'en-US'
-      wordUtterance.rate = 0.7
-      wordUtterance.pitch = 1
-      wordUtterance.volume = 1
-      if (selectedVoice) wordUtterance.voice = selectedVoice
-      
-      // Al terminar la palabra, quitar el estado de "playing"
-      wordUtterance.onend = () => {
+      // Si tiene audioUrl profesional, usarlo
+      if (letterData.audioUrl) {
+        const audio = new Audio(letterData.audioUrl)
+        audio.playbackRate = 1.0 // Los audios ya vienen con velocidad 0.7 óptima
+        
+        audio.onended = () => {
+          setPlayingAudio(null)
+        }
+        
+        audio.onerror = () => {
+          setPlayingAudio(null)
+          console.error('Error playing audio for letter:', letter)
+        }
+        
+        await audio.play()
+      } else {
+        // Fallback: si no hay audio profesional, mostrar mensaje
+        console.log(`Audio profesional no disponible aún para: ${letter}`)
         setPlayingAudio(null)
       }
       
-      // Reproducir secuencialmente: letra -> pausa -> palabra
-      window.speechSynthesis.speak(letterUtterance)
-      
-      // Pequeña pausa entre letra y palabra
-      setTimeout(() => {
-        window.speechSynthesis.speak(wordUtterance)
-      }, 500)
-      
-    } else {
-      setTimeout(() => setPlayingAudio(null), 1000)
+    } catch (error) {
+      console.error('Error with audio:', error)
+      setPlayingAudio(null)
     }
   }
 
