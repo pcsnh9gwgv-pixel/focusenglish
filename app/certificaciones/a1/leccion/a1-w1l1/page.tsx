@@ -109,26 +109,79 @@ export default function Lesson1Page() {
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set())
   const [showConfetti, setShowConfetti] = useState(false)
   const [points, setPoints] = useState(0)
+  const [voicesLoaded, setVoicesLoaded] = useState(false)
 
   const progressPercentage = Math.round((completedSections.size / 4) * 100)
 
-  // Reproducir audio de la letra usando Web Speech API
+  // Cargar voces al iniciar el componente
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      // Las voces pueden tardar en cargar
+      const loadVoices = () => {
+        const voices = window.speechSynthesis.getVoices()
+        if (voices.length > 0) {
+          setVoicesLoaded(true)
+        }
+      }
+      
+      // Intentar cargar inmediatamente
+      loadVoices()
+      
+      // También escuchar el evento de cuando las voces estén disponibles
+      window.speechSynthesis.onvoiceschanged = loadVoices
+    }
+  }, [])
+
+  // Reproducir audio de la letra usando Web Speech API con voz natural
   const playSound = (letter: string) => {
     setPlayingAudio(letter)
     
-    // Usar Web Speech API para pronunciar la letra
     if ('speechSynthesis' in window) {
-      const utterance = new SpeechSynthesisUtterance(letter)
-      utterance.lang = 'en-US'
-      utterance.rate = 0.8 // Más lento para mejor comprensión
-      utterance.pitch = 1
+      window.speechSynthesis.cancel() // Cancelar cualquier audio previo
       
-      utterance.onend = () => {
+      // Buscar la letra en los datos
+      const letterData = alphabetData.find(l => l.letter === letter)
+      if (!letterData) return
+      
+      // Obtener voces disponibles
+      const voices = window.speechSynthesis.getVoices()
+      
+      // Buscar una voz femenina en inglés US (más clara para aprendizaje)
+      let selectedVoice = voices.find(voice => 
+        voice.lang === 'en-US' && voice.name.includes('Female')
+      ) || voices.find(voice => 
+        voice.lang === 'en-US' || voice.lang.startsWith('en')
+      ) || voices[0]
+      
+      // Pronunciar primero la letra
+      const letterUtterance = new SpeechSynthesisUtterance(letter)
+      letterUtterance.lang = 'en-US'
+      letterUtterance.rate = 0.7
+      letterUtterance.pitch = 1
+      letterUtterance.volume = 1
+      if (selectedVoice) letterUtterance.voice = selectedVoice
+      
+      // Después pronunciar la palabra de ejemplo
+      const wordUtterance = new SpeechSynthesisUtterance(letterData.example)
+      wordUtterance.lang = 'en-US'
+      wordUtterance.rate = 0.7
+      wordUtterance.pitch = 1
+      wordUtterance.volume = 1
+      if (selectedVoice) wordUtterance.voice = selectedVoice
+      
+      // Al terminar la palabra, quitar el estado de "playing"
+      wordUtterance.onend = () => {
         setPlayingAudio(null)
       }
       
-      window.speechSynthesis.cancel() // Cancelar cualquier audio previo
-      window.speechSynthesis.speak(utterance)
+      // Reproducir secuencialmente: letra -> pausa -> palabra
+      window.speechSynthesis.speak(letterUtterance)
+      
+      // Pequeña pausa entre letra y palabra
+      setTimeout(() => {
+        window.speechSynthesis.speak(wordUtterance)
+      }, 500)
+      
     } else {
       setTimeout(() => setPlayingAudio(null), 1000)
     }
