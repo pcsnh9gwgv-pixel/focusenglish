@@ -341,23 +341,50 @@ export default function Lesson2Page() {
       // Buscar la frase en los datos para obtener la URL del audio
       let audioUrl: string | undefined
       
-      // Buscar en todas las categorías
+      // Normalizar la frase para búsqueda (eliminar corchetes, tomar primera opción antes de /)
+      const normalizedPhrase = phrase
+        .replace(/\[.*?\]/g, '...') // Reemplazar [texto] con ...
+        .split('/')[0] // Tomar solo la primera opción
+        .trim()
+      
+      console.log('🔊 Buscando audio para:', normalizedPhrase, '(original:', phrase, ')')
+      
+      // Buscar en todas las categorías con coincidencia flexible
       for (const category of ['formal', 'informal', 'introductions', 'farewells'] as const) {
-        const found = greetingsData[category].find(item => item.english === phrase)
+        const found = greetingsData[category].find(item => {
+          // Coincidencia exacta
+          if (item.english === normalizedPhrase) return true
+          
+          // Coincidencia ignorando puntos y mayúsculas
+          const itemNormalized = item.english.replace(/[?.!]/g, '').toLowerCase()
+          const searchNormalized = normalizedPhrase.replace(/[?.!]/g, '').toLowerCase()
+          if (itemNormalized === searchNormalized) return true
+          
+          // Coincidencia parcial (la frase contiene el item o viceversa)
+          if (normalizedPhrase.toLowerCase().includes(item.english.toLowerCase()) ||
+              item.english.toLowerCase().includes(normalizedPhrase.toLowerCase())) {
+            return true
+          }
+          
+          return false
+        })
+        
         if (found && found.audioUrl) {
           audioUrl = found.audioUrl
+          console.log('✅ Audio encontrado:', audioUrl, 'para categoría:', category)
           break
         }
       }
       
       if (!audioUrl) {
+        console.warn('❌ No se encontró audio para:', normalizedPhrase)
         setPlayingAudio(null)
         return
       }
       
       // Reproducir el audio profesional
       const audio = new Audio(audioUrl)
-      audio.playbackRate = 0.85 // Velocidad reducida para mejor comprensión
+      audio.playbackRate = 1.0 // Los audios ya vienen con velocidad reducida (85% con ffmpeg)
       
       audio.onended = () => {
         setPlayingAudio(null)
