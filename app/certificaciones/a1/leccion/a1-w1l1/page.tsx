@@ -4,18 +4,18 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 // Datos pedagógicos del alfabeto con IPA (International Phonetic Alphabet)
-// Audios profesionales con velocidad 0.7 (pausados para aprendizaje óptimo)
+// Audios profesionales locales con velocidad 0.7 (pausados para aprendizaje óptimo)
 const alphabetData = [
-  { letter: 'A', name: 'ei', ipa: '/eɪ/', example: 'Apple', exampleEs: 'Manzana', category: 'vowel', audioUrl: 'https://www.genspark.ai/api/files/s/HdirrccQ' },
-  { letter: 'B', name: 'bi', ipa: '/biː/', example: 'Book', exampleEs: 'Libro', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/U6XrsAMc' },
-  { letter: 'C', name: 'si', ipa: '/siː/', example: 'Cat', exampleEs: 'Gato', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/afAxDAV0' },
-  { letter: 'D', name: 'di', ipa: '/diː/', example: 'Dog', exampleEs: 'Perro', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/mcWrpf1L' },
-  { letter: 'E', name: 'i', ipa: '/iː/', example: 'Egg', exampleEs: 'Huevo', category: 'vowel', audioUrl: 'https://www.genspark.ai/api/files/s/Z5gVYMND' },
-  { letter: 'F', name: 'ef', ipa: '/ɛf/', example: 'Fish', exampleEs: 'Pez', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/NxOl1jFU' },
-  { letter: 'G', name: 'yi', ipa: '/dʒiː/', example: 'Girl', exampleEs: 'Niña', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/TyNXoWru' },
-  { letter: 'H', name: 'eich', ipa: '/eɪtʃ/', example: 'House', exampleEs: 'Casa', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/0VQLJV7v' },
-  { letter: 'I', name: 'ai', ipa: '/aɪ/', example: 'Ice', exampleEs: 'Hielo', category: 'vowel', audioUrl: 'https://www.genspark.ai/api/files/s/eqoUcIhp' },
-  { letter: 'J', name: 'yei', ipa: '/dʒeɪ/', example: 'Juice', exampleEs: 'Jugo', category: 'consonant', audioUrl: 'https://www.genspark.ai/api/files/s/fitGtK0x' },
+  { letter: 'A', name: 'ei', ipa: '/eɪ/', example: 'Apple', exampleEs: 'Manzana', category: 'vowel', audioUrl: '/audio/alphabet/A.mp3' },
+  { letter: 'B', name: 'bi', ipa: '/biː/', example: 'Book', exampleEs: 'Libro', category: 'consonant', audioUrl: '/audio/alphabet/B.mp3' },
+  { letter: 'C', name: 'si', ipa: '/siː/', example: 'Cat', exampleEs: 'Gato', category: 'consonant', audioUrl: '/audio/alphabet/C.mp3' },
+  { letter: 'D', name: 'di', ipa: '/diː/', example: 'Dog', exampleEs: 'Perro', category: 'consonant', audioUrl: '/audio/alphabet/D.mp3' },
+  { letter: 'E', name: 'i', ipa: '/iː/', example: 'Egg', exampleEs: 'Huevo', category: 'vowel', audioUrl: '/audio/alphabet/E.mp3' },
+  { letter: 'F', name: 'ef', ipa: '/ɛf/', example: 'Fish', exampleEs: 'Pez', category: 'consonant', audioUrl: '/audio/alphabet/F.mp3' },
+  { letter: 'G', name: 'yi', ipa: '/dʒiː/', example: 'Girl', exampleEs: 'Niña', category: 'consonant', audioUrl: '/audio/alphabet/G.mp3' },
+  { letter: 'H', name: 'eich', ipa: '/eɪtʃ/', example: 'House', exampleEs: 'Casa', category: 'consonant', audioUrl: '/audio/alphabet/H.mp3' },
+  { letter: 'I', name: 'ai', ipa: '/aɪ/', example: 'Ice', exampleEs: 'Hielo', category: 'vowel', audioUrl: '/audio/alphabet/I.mp3' },
+  { letter: 'J', name: 'yei', ipa: '/dʒeɪ/', example: 'Juice', exampleEs: 'Jugo', category: 'consonant', audioUrl: '/audio/alphabet/J.mp3' },
   { letter: 'K', name: 'kei', ipa: '/keɪ/', example: 'King', exampleEs: 'Rey', category: 'consonant' },
   { letter: 'L', name: 'el', ipa: '/ɛl/', example: 'Lion', exampleEs: 'León', category: 'consonant' },
   { letter: 'M', name: 'em', ipa: '/ɛm/', example: 'Mouse', exampleEs: 'Ratón', category: 'consonant' },
