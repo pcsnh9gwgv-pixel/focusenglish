@@ -272,6 +272,19 @@ export default function Lesson2Page() {
   const [completedSections, setCompletedSections] = useState<Set<string>>(new Set())
   const [showConfetti, setShowConfetti] = useState(false)
   const [points, setPoints] = useState(0)
+  
+  // Estados para el sistema de grabación de voz
+  const [isRecording, setIsRecording] = useState(false)
+  const [selectedPhraseToRecord, setSelectedPhraseToRecord] = useState<string | null>(null)
+  const [recordingResult, setRecordingResult] = useState<{
+    transcript: string
+    confidence: number
+    score: number
+    feedback: string
+  } | null>(null)
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([])
+  const [recognitionSupported, setRecognitionSupported] = useState(true)
 
   const progressPercentage = Math.round((completedSections.size / 4) * 100)
 
@@ -279,13 +292,227 @@ export default function Lesson2Page() {
   const playSound = async (phrase: string) => {
     setPlayingAudio(phrase)
     
-    // Simular reproducción de audio
-    setTimeout(() => {
+    try {
+      // Buscar la frase en los datos para obtener la URL del audio
+      let audioUrl: string | undefined
+      
+      // Buscar en todas las categorías
+      for (const category of ['formal', 'informal', 'introductions', 'farewells'] as const) {
+        const found = greetingsData[category].find(item => item.english === phrase)
+        if (found && found.audioUrl) {
+          audioUrl = found.audioUrl
+          break
+        }
+      }
+      
+      if (!audioUrl) {
+        setPlayingAudio(null)
+        return
+      }
+      
+      // Reproducir el audio profesional
+      const audio = new Audio(audioUrl)
+      audio.playbackRate = 1.0 // Los audios ya vienen con velocidad 0.7 óptima
+      
+      audio.onended = () => {
+        setPlayingAudio(null)
+      }
+      
+      audio.onerror = () => {
+        setPlayingAudio(null)
+        console.error('Error playing audio for phrase:', phrase)
+      }
+      
+      await audio.play()
+      
+    } catch (error) {
+      console.error('Error with audio:', error)
       setPlayingAudio(null)
-    }, 2000)
+    }
+  }
+
+  // Sistema de grabación y evaluación de pronunciación
+  const startRecording = async (phrase: string) => {
+    try {
+      setSelectedPhraseToRecord(phrase)
+      setRecordingResult(null)
+      
+      // Solicitar permiso de micrófono
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      
+      // Crear MediaRecorder para grabar
+      const recorder = new MediaRecorder(stream)
+      const chunks: Blob[] = []
+      
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push(e.data)
+        }
+      }
+      
+      recorder.onstop = async () => {
+        // Detener todos los tracks del stream
+        stream.getTracks().forEach(track => track.stop())
+        
+        // Crear blob de audio
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' })
+        
+        // Evaluar pronunciación usando Web Speech API
+        await evaluatePronunciation(phrase, audioBlob)
+      }
+      
+      setMediaRecorder(recorder)
+      recorder.start()
+      setIsRecording(true)
+      
+    } catch (error) {
+      console.error('Error al iniciar grabación:', error)
+      alert('No se pudo acceder al micrófono. Por favor, permite el acceso al micrófono.')
+      setRecognitionSupported(false)
+    }
+  }
+  
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop()
+      setIsRecording(false)
+    }
+  }
+  
+  const evaluatePronunciation = async (expectedPhrase: string, audioBlob: Blob) => {
+    try {
+      // Usar Web Speech API para reconocimiento de voz
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      
+      if (!SpeechRecognition) {
+        setRecognitionSupported(false)
+        setRecordingResult({
+          transcript: '',
+          confidence: 0,
+          score: 0,
+          feedback: 'Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.'
+        })
+        return
+      }
+      
+      const recognition = new SpeechRecognition()
+      recognition.lang = 'en-US'
+      recognition.interimResults = false
+      recognition.maxAlternatives = 1
+      
+      // Crear un audio temporal del blob para reproducirlo en el reconocedor
+      const audioUrl = URL.createObjectURL(audioBlob)
+      const audio = new Audio(audioUrl)
+      
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript
+        const confidence = event.results[0][0].confidence
+        
+        // Calcular similitud entre lo esperado y lo transcrito
+        const similarity = calculateSimilarity(expectedPhrase.toLowerCase(), transcript.toLowerCase())
+        const score = Math.round(similarity * 100)
+        
+        let feedback = ''
+        let bonusPoints = 0
+        
+        if (score >= 90) {
+          feedback = '🎉 ¡Excelente pronunciación! Perfecto.'
+          bonusPoints = 20
+        } else if (score >= 75) {
+          feedback = '👍 ¡Muy bien! Buena pronunciación.'
+          bonusPoints = 15
+        } else if (score >= 60) {
+          feedback = '😊 Bien. Sigue practicando.'
+          bonusPoints = 10
+        } else if (score >= 40) {
+          feedback = '🤔 Necesitas practicar más. Escucha el audio de referencia.'
+          bonusPoints = 5
+        } else {
+          feedback = '💪 Inténtalo de nuevo. Escucha bien la pronunciación correcta.'
+          bonusPoints = 0
+        }
+        
+        setRecordingResult({
+          transcript,
+          confidence,
+          score,
+          feedback
+        })
+        
+        // Agregar puntos bonus
+        if (bonusPoints > 0) {
+          setPoints(points + bonusPoints)
+        }
+        
+        URL.revokeObjectURL(audioUrl)
+      }
+      
+      recognition.onerror = (event: any) => {
+        console.error('Error en reconocimiento:', event.error)
+        setRecordingResult({
+          transcript: '',
+          confidence: 0,
+          score: 0,
+          feedback: '❌ Error al procesar el audio. Intenta de nuevo.'
+        })
+        URL.revokeObjectURL(audioUrl)
+      }
+      
+      // Iniciar reconocimiento
+      recognition.start()
+      
+      // Reproducir el audio grabado para que el reconocedor lo procese
+      // Nota: En producción real, necesitarías enviar el audio a un servidor
+      // para procesarlo con una API más robusta como Google Cloud Speech-to-Text
+      
+    } catch (error) {
+      console.error('Error en evaluación:', error)
+      setRecordingResult({
+        transcript: '',
+        confidence: 0,
+        score: 0,
+        feedback: '❌ Error al evaluar. Intenta de nuevo.'
+      })
+    }
+  }
+  
+  // Calcular similitud entre dos strings (algoritmo de Levenshtein simplificado)
+  const calculateSimilarity = (str1: string, str2: string): number => {
+    const longer = str1.length > str2.length ? str1 : str2
+    const shorter = str1.length > str2.length ? str2 : str1
     
-    // TODO: Implementar audio real con ElevenLabs
-    console.log('Playing audio for:', phrase)
+    if (longer.length === 0) return 1.0
+    
+    const editDistance = levenshteinDistance(longer, shorter)
+    return (longer.length - editDistance) / longer.length
+  }
+  
+  const levenshteinDistance = (str1: string, str2: string): number => {
+    const matrix: number[][] = []
+    
+    for (let i = 0; i <= str2.length; i++) {
+      matrix[i] = [i]
+    }
+    
+    for (let j = 0; j <= str1.length; j++) {
+      matrix[0][j] = j
+    }
+    
+    for (let i = 1; i <= str2.length; i++) {
+      for (let j = 1; j <= str1.length; j++) {
+        if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+          matrix[i][j] = matrix[i - 1][j - 1]
+        } else {
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j - 1] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j] + 1
+          )
+        }
+      }
+    }
+    
+    return matrix[str2.length][str1.length]
   }
 
   // Verificar respuesta del quiz
@@ -643,7 +870,59 @@ export default function Lesson2Page() {
                           >
                             🔊
                           </button>
+                          <button
+                            className={`p-2 rounded-lg transition-all ${
+                              isRecording && selectedPhraseToRecord === item.english
+                                ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+                                : 'bg-green-500 hover:bg-green-600'
+                            } text-white`}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              if (isRecording && selectedPhraseToRecord === item.english) {
+                                stopRecording()
+                              } else if (!isRecording) {
+                                startRecording(item.english)
+                              }
+                            }}
+                          >
+                            {isRecording && selectedPhraseToRecord === item.english ? '⏹️' : '🎤'}
+                          </button>
                         </div>
+                        
+                        {/* Resultado de grabación */}
+                        {recordingResult && selectedPhraseToRecord === item.english && (
+                          <div className={`mt-3 p-4 rounded-lg border-2 ${
+                            recordingResult.score >= 75 
+                              ? 'bg-green-50 border-green-500'
+                              : recordingResult.score >= 60
+                              ? 'bg-yellow-50 border-yellow-500'
+                              : 'bg-red-50 border-red-500'
+                          }`}>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="font-bold text-sm">Tu pronunciación:</span>
+                              <span className={`text-2xl font-black ${
+                                recordingResult.score >= 75 
+                                  ? 'text-green-700'
+                                  : recordingResult.score >= 60
+                                  ? 'text-yellow-700'
+                                  : 'text-red-700'
+                              }`}>
+                                {recordingResult.score}%
+                              </span>
+                            </div>
+                            <p className="text-sm italic mb-2">
+                              Escuchamos: "{recordingResult.transcript}"
+                            </p>
+                            <p className="text-sm font-semibold">
+                              {recordingResult.feedback}
+                            </p>
+                            {recordingResult.score >= 60 && (
+                              <p className="text-xs text-green-600 mt-2">
+                                +{recordingResult.score >= 90 ? 20 : recordingResult.score >= 75 ? 15 : 10} puntos ganados
+                              </p>
+                            )}
+                          </div>
+                        )}
                         
                         <p className="text-lg text-gray-700 mb-2">
                           <span className="font-semibold">Español:</span> {item.spanish}
