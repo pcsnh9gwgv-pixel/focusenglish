@@ -792,35 +792,7 @@ export default function Lesson1Page() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateX(-20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-        
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-          20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out;
-        }
-        
-        .animate-slideIn {
-          animation: slideIn 0.5s ease-out;
-        }
-        
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-      `}</style>
+
     </div>
   )
 }
