@@ -1,5 +1,7 @@
 # Focus English - Plataforma de Cursos de Inglés
 
+**🚀 Deployment Status**: Ready for Cloudflare Pages | **Version**: 0.1.2 | **Updated**: 2026-01-19
+
 ## 📚 Descripción del Proyecto
 
 Focus English es una plataforma educativa integral para aprendizaje de inglés, especializada en:
