@@ -1,3 +1,8 @@
 name = "focusenglish"
 compatibility_flags = ["nodejs_compat"]
 compatibility_date = "2026-01-19"
+
+# Enable Node.js compatibility for:
+# - Supabase client (uses node:buffer)
+# - Next.js runtime (uses node:async_hooks)
+# - Resend email API
