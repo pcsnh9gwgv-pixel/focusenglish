@@ -3,9 +3,9 @@
 ## ✅ Estado Actual de Implementación
 
 ### Ejercicios Completados
-- **Total implementado**: 120 ejercicios
-- **Porcentaje completado**: 12.5% (120/960)
-- **Lecciones completadas**: 6 de 48 lecciones
+- **Total implementado**: 200 ejercicios
+- **Porcentaje completado**: 20.8% (200/960)
+- **Lecciones completadas**: 10 de 48 lecciones
 
 ### Desglose por Semana
 
@@ -17,13 +17,21 @@
 
 **Subtotal Semana 1**: 80 ejercicios ✅
 
-#### ⏳ SEMANA 2: Reading Comprehension Avanzado (50% COMPLETADO)
+#### ✅ SEMANA 2: Reading Comprehension Avanzado (100% COMPLETADO)
 1. **b2-w2l1**: Reading Part 2 - Gapped Text - ✅ 20/20 ejercicios
 2. **b2-w2l2**: Reading Part 3 - Multiple Matching - ✅ 20/20 ejercicios
-3. **b2-w2l3**: Reading Part 4 - Multiple Choice - ⏳ 0/20 ejercicios (PENDIENTE)
-4. **b2-w2l4**: Vocabulary - Environment and Society - ⏳ 0/20 ejercicios (PENDIENTE)
+3. **b2-w2l3**: Reading Part 4 - Multiple Choice - ✅ 20/20 ejercicios
+4. **b2-w2l4**: Vocabulary - Environment and Society - ✅ 20/20 ejercicios
 
-**Subtotal Semana 2**: 40 ejercicios ✅ + 40 pendientes ⏳
+**Subtotal Semana 2**: 80 ejercicios ✅
+
+#### ⏳ SEMANA 3: Writing Skills - Essay Writing (50% COMPLETADO)
+1. **b2-w3l1**: Writing Part 1 - Essay - ✅ 20/20 ejercicios
+2. **b2-w3l2**: Advanced Linking Devices - ✅ 20/20 ejercicios
+3. **b2-w3l3**: Writing Part 2 - Article/Review - ⏳ 0/20 ejercicios (PENDIENTE)
+4. **b2-w3l4**: Writing Part 2 - Letter/Email - ⏳ 0/20 ejercicios (PENDIENTE)
+
+**Subtotal Semana 3**: 40 ejercicios ✅ + 40 pendientes ⏳
 
 ## 📁 Archivos Creados
 
@@ -40,13 +48,13 @@
   - Sistema de puntos
 
 **Estadísticas**:
-- Líneas de código: ~1,500
-- Tamaño: ~60 KB
+- Líneas de código: ~2,500
+- Tamaño: ~100 KB
 - Ejercicios por tipo:
-  - Multiple Choice: ~60 ejercicios (50%)
-  - Fill-in-the-Blank: ~30 ejercicios (25%)
-  - True/False: ~25 ejercicios (21%)
-  - Matching: ~5 ejercicios (4%)
+  - Multiple Choice: ~110 ejercicios (55%)
+  - Fill-in-the-Blank: ~50 ejercicios (25%)
+  - True/False: ~35 ejercicios (17.5%)
+  - Matching: ~5 ejercicios (2.5%)
 
 ### 2. `B2_EXERCISES_IMPLEMENTATION_PLAN.md` (Documentación)
 **Ubicación**: `content/courses/certifications/B2_EXERCISES_IMPLEMENTATION_PLAN.md`
@@ -71,28 +79,22 @@
 ✅ **Sistema de puntos**
 
 ### Distribución de Dificultad (Implementado)
-- **Easy**: ~48 ejercicios (40%) - 5 puntos cada uno
-- **Medium**: ~60 ejercicios (50%) - 10 puntos cada uno
-- **Hard**: ~12 ejercicios (10%) - 15 puntos cada uno
+- **Easy**: ~80 ejercicios (40%) - 5 puntos cada uno
+- **Medium**: ~100 ejercicios (50%) - 10 puntos cada uno
+- **Hard**: ~20 ejercicios (10%) - 15 puntos cada uno
 
-**Puntos totales disponibles**: ~960 puntos en 120 ejercicios
+**Puntos totales disponibles**: ~1,600 puntos en 200 ejercicios
 
 ## 📈 Lo Que Falta Por Completar
 
 ### Resumen Global
-- **Ejercicios pendientes**: 840 (87.5%)
-- **Lecciones pendientes**: 42 de 48
-- **Semanas pendientes**: Completar Semana 2 + Semanas 3-12
+- **Ejercicios pendientes**: 760 (79.2%)
+- **Lecciones pendientes**: 38 de 48
+- **Semanas pendientes**: Completar Semana 3 + Semanas 4-12
 
 ### Desglose Detallado
 
-#### Semana 2 (40 ejercicios pendientes)
-- ⏳ b2-w2l3: Reading Part 4 - 20 ejercicios
-- ⏳ b2-w2l4: Vocabulary - Environment - 20 ejercicios
-
-#### Semana 3: Writing Skills (80 ejercicios)
-- ⏳ b2-w3l1: Writing Part 1 - Essay - 20 ejercicios
-- ⏳ b2-w3l2: Advanced Linking Devices - 20 ejercicios
+#### Semana 3 (40 ejercicios pendientes)
 - ⏳ b2-w3l3: Writing Part 2 - Article/Review - 20 ejercicios
 - ⏳ b2-w3l4: Writing Part 2 - Letter/Email - 20 ejercicios
 
