@@ -1201,14 +1201,816 @@ export const b2_w2l2_exercises: Exercise[] = [
   }
 ];
 
-// Export array for Semana 2
-export const b2Week2Exercises: LessonExercises[] = [
-  { lessonId: 'b2-w2l1', exercises: b2_w2l1_exercises },
-  { lessonId: 'b2-w2l2', exercises: b2_w2l2_exercises }
-  // b2-w2l3 y b2-w2l4 pendientes (40 ejercicios)
+// Lección b2-w2l3: Reading Part 4 - Multiple Choice (multiple texts)
+export const b2_w2l3_exercises: Exercise[] = [
+  {
+    id: 'b2-w2l3-ex1',
+    type: 'multiple-choice',
+    question: 'How many texts do you read in Reading Part 4?',
+    options: ['2 texts', '3 texts', '4 texts', '5 texts'],
+    correctAnswer: 2,
+    explanation: 'Reading Part 4 contains 4-5 short texts on a related theme.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex2',
+    type: 'multiple-choice',
+    question: 'What is the main focus of Reading Part 4?',
+    options: ['Grammar', 'Cross-text comparison', 'Vocabulary', 'Translation'],
+    correctAnswer: 1,
+    explanation: 'Reading Part 4 tests your ability to compare and contrast information across multiple texts.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex3',
+    type: 'true-false',
+    question: 'In Reading Part 4, all texts are about exactly the same thing.',
+    correctAnswer: 'false',
+    explanation: 'False. The texts share a theme but present different perspectives or opinions.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex4',
+    type: 'fill-blank',
+    question: 'Reading Part 4 has ____ multiple-choice questions.',
+    correctAnswer: '6',
+    explanation: 'There are 6 questions in Reading Part 4.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex5',
+    type: 'multiple-choice',
+    question: 'Which skill is most important for Reading Part 4?',
+    options: ['Memorization', 'Comparing viewpoints', 'Translation', 'Speed writing'],
+    correctAnswer: 1,
+    explanation: 'The ability to compare and identify different viewpoints across texts is crucial.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex6',
+    type: 'true-false',
+    question: 'Questions in Reading Part 4 ask you to identify which writer expresses a certain opinion.',
+    correctAnswer: 'true',
+    explanation: 'True. Questions often ask which text/writer mentions a specific idea or holds a particular view.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex7',
+    type: 'fill-blank',
+    question: 'The texts in Reading Part 4 are usually labeled A, B, C, and ____.',
+    correctAnswer: 'D',
+    explanation: 'The four texts are labeled A, B, C, and D.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex8',
+    type: 'multiple-choice',
+    question: 'What should you do before answering questions in Reading Part 4?',
+    options: ['Memorize all texts', 'Skim all texts to understand each viewpoint', 'Translate everything', 'Answer randomly'],
+    correctAnswer: 1,
+    explanation: 'Skimming all texts first helps you understand each writer\'s main perspective.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l3-ex9',
+    type: 'true-false',
+    question: 'Each text can be the answer to multiple questions.',
+    correctAnswer: 'true',
+    explanation: 'True. One text might be referenced in several different questions.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex10',
+    type: 'fill-blank',
+    question: 'You should spend approximately ____ minutes on Reading Part 4.',
+    correctAnswer: '15',
+    explanation: 'About 15 minutes is recommended for Reading Part 4.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l3-ex11',
+    type: 'multiple-choice',
+    question: 'Which strategy helps in Reading Part 4?',
+    options: ['Reading word by word', 'Identifying each writer\'s opinion', 'Translating mentally', 'Skipping questions'],
+    correctAnswer: 1,
+    explanation: 'Clearly identifying each writer\'s opinion or stance is key to answering correctly.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l3-ex12',
+    type: 'true-false',
+    question: 'The texts in Reading Part 4 are all written by the same author.',
+    correctAnswer: 'false',
+    explanation: 'False. Each text is written by a different person with their own perspective.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex13',
+    type: 'multiple-choice',
+    question: 'What type of questions are asked in Reading Part 4?',
+    options: ['Grammar questions', 'Which writer shares a certain opinion?', 'Vocabulary definitions', 'Translation tasks'],
+    correctAnswer: 1,
+    explanation: 'Questions ask you to identify which text/writer expresses specific opinions or information.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex14',
+    type: 'fill-blank',
+    question: 'Reading Part 4 tests your ability to understand different __________ on a topic.',
+    correctAnswer: 'viewpoints',
+    explanation: 'This part tests understanding of different viewpoints, opinions, or perspectives.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex15',
+    type: 'multiple-choice',
+    question: 'If two texts mention similar ideas, how do you choose the correct answer?',
+    options: ['Pick randomly', 'Look for the exact match to the question', 'Choose the longest text', 'Skip the question'],
+    correctAnswer: 1,
+    explanation: 'Look for the text that most precisely matches what the question asks.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l3-ex16',
+    type: 'true-false',
+    question: 'Reading Part 4 requires you to understand implicit meaning, not just explicit facts.',
+    correctAnswer: 'true',
+    explanation: 'True. You often need to infer opinions and attitudes, not just identify stated facts.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l3-ex17',
+    type: 'fill-blank',
+    question: 'Each text in Reading Part 4 is approximately ____-____ words long.',
+    correctAnswer: '100-150',
+    explanation: 'Each text is roughly 100-150 words in length.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l3-ex18',
+    type: 'multiple-choice',
+    question: 'What is a common mistake in Reading Part 4?',
+    options: ['Reading too carefully', 'Not distinguishing between similar viewpoints', 'Taking too much time', 'All of the above'],
+    correctAnswer: 3,
+    explanation: 'All are common mistakes. Balance speed with careful attention to distinguish viewpoints.',
+    difficulty: 'hard',
+    points: 15
+  },
+  {
+    id: 'b2-w2l3-ex19',
+    type: 'true-false',
+    question: 'You should underline key opinion words in each text.',
+    correctAnswer: 'true',
+    explanation: 'True. Marking opinion indicators helps you track each writer\'s stance.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l3-ex20',
+    type: 'multiple-choice',
+    question: 'Which is NOT tested in Reading Part 4?',
+    options: ['Comparing opinions', 'Identifying viewpoints', 'Grammar structures', 'Understanding attitudes'],
+    correctAnswer: 2,
+    explanation: 'Grammar structures are not directly tested. Focus is on understanding and comparing opinions.',
+    difficulty: 'easy',
+    points: 5
+  }
 ];
 
-// Note: Este archivo ahora contiene 120 ejercicios completados (Semana 1 + parcial Semana 2).
+// Lección b2-w2l4: Vocabulary - Environment and Society
+export const b2_w2l4_exercises: Exercise[] = [
+  {
+    id: 'b2-w2l4-ex1',
+    type: 'multiple-choice',
+    question: 'What does "sustainable" mean?',
+    options: ['Expensive', 'Able to continue without damaging the environment', 'Fast', 'Modern'],
+    correctAnswer: 1,
+    explanation: 'Sustainable means able to be maintained without depleting natural resources.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex2',
+    type: 'fill-blank',
+    question: 'The increase in Earth\'s temperature is called global ________.',
+    correctAnswer: 'warming',
+    explanation: 'Global warming refers to the long-term increase in Earth\'s average temperature.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex3',
+    type: 'multiple-choice',
+    question: 'Which collocation is correct?',
+    options: ['Make pollution', 'Do pollution', 'Cause pollution', 'Have pollution'],
+    correctAnswer: 2,
+    explanation: 'We "cause pollution" or "create pollution" in English.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex4',
+    type: 'true-false',
+    question: '"Renewable energy" comes from sources that won\'t run out.',
+    correctAnswer: 'true',
+    explanation: 'True. Renewable energy comes from sources like sun, wind, and water that naturally replenish.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex5',
+    type: 'fill-blank',
+    question: 'The variety of plant and animal life in an area is called ________.',
+    correctAnswer: 'biodiversity',
+    explanation: 'Biodiversity refers to the variety of life forms in an environment.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l4-ex6',
+    type: 'multiple-choice',
+    question: 'What does "deforestation" mean?',
+    options: ['Planting trees', 'Cutting down forests', 'Protecting forests', 'Studying forests'],
+    correctAnswer: 1,
+    explanation: 'Deforestation is the action of clearing forests or trees from an area.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex7',
+    type: 'fill-blank',
+    question: 'Gases that trap heat in the atmosphere are called ________ gases.',
+    correctAnswer: 'greenhouse',
+    explanation: 'Greenhouse gases like CO2 trap heat and contribute to global warming.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex8',
+    type: 'multiple-choice',
+    question: 'Which phrase means "to use something again"?',
+    options: ['Reduce', 'Reuse', 'Recycle', 'All of the above'],
+    correctAnswer: 1,
+    explanation: '"Reuse" means to use something again. "Recycle" means to process for reuse.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex9',
+    type: 'true-false',
+    question: '"Fossil fuels" include oil, coal, and natural gas.',
+    correctAnswer: 'true',
+    explanation: 'True. Fossil fuels are formed from ancient organic matter.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex10',
+    type: 'fill-blank',
+    question: 'The damage done to water, air, or land by harmful substances is called ________.',
+    correctAnswer: 'pollution',
+    explanation: 'Pollution is the introduction of harmful materials into the environment.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex11',
+    type: 'multiple-choice',
+    question: 'What does "carbon footprint" mean?',
+    options: ['A type of shoe', 'The amount of CO2 you produce', 'A walking path', 'A measurement tool'],
+    correctAnswer: 1,
+    explanation: 'Carbon footprint is the total amount of greenhouse gases produced by your actions.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l4-ex12',
+    type: 'fill-blank',
+    question: 'Animals that might soon disappear completely are called ________ species.',
+    correctAnswer: 'endangered',
+    explanation: 'Endangered species are at serious risk of extinction.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex13',
+    type: 'true-false',
+    question: '"To conserve" means to protect and preserve something.',
+    correctAnswer: 'true',
+    explanation: 'True. Conservation means protecting natural resources and wildlife.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex14',
+    type: 'multiple-choice',
+    question: 'Which is the correct collocation?',
+    options: ['Do waste', 'Make waste', 'Produce waste', 'Create waste'],
+    correctAnswer: 2,
+    explanation: 'We "produce waste" or "generate waste" in English.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex15',
+    type: 'fill-blank',
+    question: 'The layer of gas that protects Earth from UV radiation is the ________ layer.',
+    correctAnswer: 'ozone',
+    explanation: 'The ozone layer protects life on Earth from harmful ultraviolet radiation.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l4-ex16',
+    type: 'multiple-choice',
+    question: 'What does "eco-friendly" mean?',
+    options: ['Expensive', 'Not harmful to the environment', 'Made of plastic', 'Very friendly'],
+    correctAnswer: 1,
+    explanation: 'Eco-friendly means not harmful to the environment.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex17',
+    type: 'fill-blank',
+    question: 'When ice caps melt, they contribute to rising sea ________.',
+    correctAnswer: 'levels',
+    explanation: 'Melting ice caps cause sea levels to rise, threatening coastal areas.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w2l4-ex18',
+    type: 'true-false',
+    question: '"Climate change" refers only to temperature increases.',
+    correctAnswer: 'false',
+    explanation: 'False. Climate change includes changes in temperature, precipitation, sea levels, and weather patterns.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l4-ex19',
+    type: 'multiple-choice',
+    question: 'Which word means "to make something impure or toxic"?',
+    options: ['Purify', 'Contaminate', 'Clean', 'Filter'],
+    correctAnswer: 1,
+    explanation: '"Contaminate" means to make something impure or poisonous.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w2l4-ex20',
+    type: 'fill-blank',
+    question: 'The process of treating materials so they can be used again is called ________.',
+    correctAnswer: 'recycling',
+    explanation: 'Recycling is the process of converting waste into reusable materials.',
+    difficulty: 'easy',
+    points: 5
+  }
+];
+
+// Export array for Semana 2 COMPLETA
+export const b2Week2Exercises: LessonExercises[] = [
+  { lessonId: 'b2-w2l1', exercises: b2_w2l1_exercises },
+  { lessonId: 'b2-w2l2', exercises: b2_w2l2_exercises },
+  { lessonId: 'b2-w2l3', exercises: b2_w2l3_exercises },
+  { lessonId: 'b2-w2l4', exercises: b2_w2l4_exercises }
+];
+
+// ============================================
+// SEMANA 3: Writing Skills - Essay Writing
+// ============================================
+
+// Lección b2-w3l1: Writing Part 1 - Essay (compulsory)
+export const b2_w3l1_exercises: Exercise[] = [
+  {
+    id: 'b2-w3l1-ex1',
+    type: 'multiple-choice',
+    question: 'How many words should a B2 essay be?',
+    options: ['100-120 words', '140-190 words', '200-250 words', '250-300 words'],
+    correctAnswer: 1,
+    explanation: 'B2 essays should be 140-190 words long.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex2',
+    type: 'multiple-choice',
+    question: 'How many paragraphs should a B2 essay have?',
+    options: ['2 paragraphs', '3 paragraphs', '4-5 paragraphs', '6 paragraphs'],
+    correctAnswer: 2,
+    explanation: 'A B2 essay typically has 4-5 paragraphs: introduction, 2-3 body paragraphs, and conclusion.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex3',
+    type: 'true-false',
+    question: 'In B2 Writing Part 1, you can choose whether to write an essay or not.',
+    correctAnswer: 'false',
+    explanation: 'False. Writing Part 1 is compulsory - you must write an essay.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex4',
+    type: 'fill-blank',
+    question: 'The main argument or position in an essay is called the ________ statement.',
+    correctAnswer: 'thesis',
+    explanation: 'A thesis statement presents the main argument or claim of your essay.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex5',
+    type: 'multiple-choice',
+    question: 'What should the introduction of an essay include?',
+    options: ['Only your opinion', 'Background info and thesis statement', 'Conclusion', 'Examples'],
+    correctAnswer: 1,
+    explanation: 'The introduction should provide context and include your thesis statement.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex6',
+    type: 'true-false',
+    question: 'Each body paragraph should focus on one main idea.',
+    correctAnswer: 'true',
+    explanation: 'True. Each body paragraph should develop one clear point supporting your thesis.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex7',
+    type: 'fill-blank',
+    question: 'The final paragraph that summarizes your argument is called the ________.',
+    correctAnswer: 'conclusion',
+    explanation: 'The conclusion restates your thesis and summarizes main points.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex8',
+    type: 'multiple-choice',
+    question: 'Which is the best opening for a B2 essay?',
+    options: [
+      'I think that...',
+      'In today\'s world, many people believe that...',
+      'This essay will talk about...',
+      'Hello, my name is...'
+    ],
+    correctAnswer: 1,
+    explanation: 'A general statement about the topic is more formal and engaging than the other options.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l1-ex9',
+    type: 'true-false',
+    question: 'You should use contractions like "don\'t" and "can\'t" in formal essays.',
+    correctAnswer: 'false',
+    explanation: 'False. Avoid contractions in formal writing. Use "do not" and "cannot" instead.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex10',
+    type: 'fill-blank',
+    question: 'Words like "firstly", "secondly", and "finally" are called ________ words.',
+    correctAnswer: 'sequencing',
+    explanation: 'Sequencing words (or ordering words) help organize your arguments logically.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex11',
+    type: 'multiple-choice',
+    question: 'What should you do in the conclusion?',
+    options: [
+      'Introduce new ideas',
+      'Restate thesis and summarize points',
+      'Write personal stories',
+      'Ask questions'
+    ],
+    correctAnswer: 1,
+    explanation: 'The conclusion should restate your thesis and summarize main arguments without new ideas.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex12',
+    type: 'true-false',
+    question: 'It\'s acceptable to use "I" and "my opinion" in B2 essays.',
+    correctAnswer: 'true',
+    explanation: 'True. While formal, B2 essays can include personal opinions using "I" appropriately.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l1-ex13',
+    type: 'multiple-choice',
+    question: 'Which transition word shows contrast?',
+    options: ['Furthermore', 'However', 'Moreover', 'Additionally'],
+    correctAnswer: 1,
+    explanation: '"However" introduces a contrasting idea, while others add supporting information.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex14',
+    type: 'fill-blank',
+    question: 'You should spend approximately ________ minutes planning your essay.',
+    correctAnswer: '5-10',
+    explanation: 'Spend 5-10 minutes planning to ensure a clear structure before writing.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l1-ex15',
+    type: 'true-false',
+    question: 'Every paragraph needs a topic sentence.',
+    correctAnswer: 'true',
+    explanation: 'True. A topic sentence introduces the main idea of each paragraph.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex16',
+    type: 'multiple-choice',
+    question: 'Which is the most formal way to express your opinion?',
+    options: [
+      'I think...',
+      'In my view...',
+      'It can be argued that...',
+      'I reckon...'
+    ],
+    correctAnswer: 2,
+    explanation: '"It can be argued that..." is more formal and academic than the other options.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l1-ex17',
+    type: 'fill-blank',
+    question: 'Supporting your arguments with ________ makes your essay more convincing.',
+    correctAnswer: 'examples',
+    explanation: 'Examples, facts, or evidence strengthen your arguments and make them more persuasive.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex18',
+    type: 'true-false',
+    question: 'You lose marks if you write more than 190 words.',
+    correctAnswer: 'false',
+    explanation: 'False. Writing slightly over the limit is acceptable, but being too short will lose marks.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l1-ex19',
+    type: 'multiple-choice',
+    question: 'What is the purpose of a thesis statement?',
+    options: [
+      'To ask a question',
+      'To state your main argument clearly',
+      'To provide examples',
+      'To conclude the essay'
+    ],
+    correctAnswer: 1,
+    explanation: 'A thesis statement clearly presents your main argument or position on the topic.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l1-ex20',
+    type: 'fill-blank',
+    question: 'The essay structure is: introduction, ________ paragraphs, and conclusion.',
+    correctAnswer: 'body',
+    explanation: 'Body paragraphs contain your main arguments and supporting evidence.',
+    difficulty: 'easy',
+    points: 5
+  }
+];
+
+// Lección b2-w3l2: Advanced Linking Devices
+export const b2_w3l2_exercises: Exercise[] = [
+  {
+    id: 'b2-w3l2-ex1',
+    type: 'multiple-choice',
+    question: 'Which linking word adds information?',
+    options: ['However', 'Furthermore', 'Although', 'Despite'],
+    correctAnswer: 1,
+    explanation: '"Furthermore" adds additional information to support your point.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex2',
+    type: 'fill-blank',
+    question: '________ the rain, we went to the park. (shows contrast)',
+    correctAnswer: 'Despite',
+    explanation: '"Despite" is used to show contrast and is followed by a noun or -ing form.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l2-ex3',
+    type: 'true-false',
+    question: '"Moreover" and "furthermore" have similar meanings.',
+    correctAnswer: 'true',
+    explanation: 'True. Both add supporting information or additional points.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex4',
+    type: 'multiple-choice',
+    question: 'Which linker shows result or consequence?',
+    options: ['Although', 'Therefore', 'While', 'Unless'],
+    correctAnswer: 1,
+    explanation: '"Therefore" introduces a result or logical consequence.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex5',
+    type: 'fill-blank',
+    question: 'She studied hard; ________, she passed the exam.',
+    correctAnswer: 'consequently',
+    explanation: '"Consequently" shows a result. Other options: therefore, thus, as a result.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l2-ex6',
+    type: 'true-false',
+    question: '"In spite of" and "despite" mean the same thing.',
+    correctAnswer: 'true',
+    explanation: 'True. Both show contrast, though "in spite of" is followed by "of".',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex7',
+    type: 'multiple-choice',
+    question: 'Which is correct?',
+    options: [
+      'Although it was raining, but we went out',
+      'Although it was raining, we went out',
+      'It was raining, although we went out',
+      'Although raining, we went out'
+    ],
+    correctAnswer: 1,
+    explanation: '"Although" doesn\'t need "but". It connects two contrasting clauses.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l2-ex8',
+    type: 'fill-blank',
+    question: 'Smoking is unhealthy. ________, it is expensive.',
+    correctAnswer: 'Moreover',
+    explanation: '"Moreover" adds another point. Alternatives: Furthermore, In addition, Additionally.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex9',
+    type: 'true-false',
+    question: '"On the other hand" introduces a contrasting view.',
+    correctAnswer: 'true',
+    explanation: 'True. It presents an alternative or opposite viewpoint.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex10',
+    type: 'multiple-choice',
+    question: 'Which shows purpose?',
+    options: ['Because', 'In order to', 'Although', 'However'],
+    correctAnswer: 1,
+    explanation: '"In order to" expresses purpose (why something is done).',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex11',
+    type: 'fill-blank',
+    question: 'She worked hard ________ succeed.',
+    correctAnswer: 'in order to',
+    explanation: '"In order to" + infinitive shows purpose. Also: "to", "so as to".',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex12',
+    type: 'true-false',
+    question: '"Nevertheless" means the same as "however".',
+    correctAnswer: 'true',
+    explanation: 'True. Both introduce contrasting information, though "nevertheless" is more formal.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex13',
+    type: 'multiple-choice',
+    question: 'Which is the most formal linker for adding information?',
+    options: ['And', 'Also', 'Furthermore', 'Too'],
+    correctAnswer: 2,
+    explanation: '"Furthermore" is the most formal way to add supporting information.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l2-ex14',
+    type: 'fill-blank',
+    question: '________ being tired, she continued working.',
+    correctAnswer: 'Despite',
+    explanation: '"Despite" + -ing form shows contrast. Also: "In spite of".',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l2-ex15',
+    type: 'true-false',
+    question: '"As a result" introduces a consequence.',
+    correctAnswer: 'true',
+    explanation: 'True. "As a result" shows what happened because of something.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex16',
+    type: 'multiple-choice',
+    question: 'Complete: "I like coffee, ________ tea."',
+    options: ['however', 'whereas I prefer', 'despite', 'although'],
+    correctAnswer: 1,
+    explanation: '"Whereas" compares two contrasting preferences or situations.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l2-ex17',
+    type: 'fill-blank',
+    question: 'It was cold. ________, we went swimming.',
+    correctAnswer: 'Nevertheless',
+    explanation: '"Nevertheless" shows contrast - something happened despite the circumstances.',
+    difficulty: 'medium',
+    points: 10
+  },
+  {
+    id: 'b2-w3l2-ex18',
+    type: 'true-false',
+    question: 'Linking words make your writing more coherent.',
+    correctAnswer: 'true',
+    explanation: 'True. They connect ideas logically and improve the flow of your writing.',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex19',
+    type: 'multiple-choice',
+    question: 'Which shows condition?',
+    options: ['Unless', 'Moreover', 'Furthermore', 'Therefore'],
+    correctAnswer: 0,
+    explanation: '"Unless" introduces a condition (meaning "if not").',
+    difficulty: 'easy',
+    points: 5
+  },
+  {
+    id: 'b2-w3l2-ex20',
+    type: 'fill-blank',
+    question: '________ you study, you won\'t pass. (condition)',
+    correctAnswer: 'Unless',
+    explanation: '"Unless" means "if not". Unless you study = If you don\'t study.',
+    difficulty: 'easy',
+    points: 5
+  }
+];
+
+// Export array for Semana 3 (primeras 2 lecciones)
+export const b2Week3ExercisesPartial: LessonExercises[] = [
+  { lessonId: 'b2-w3l1', exercises: b2_w3l1_exercises },
+  { lessonId: 'b2-w3l2', exercises: b2_w3l2_exercises }
+];
 // Quedan 840 ejercicios por implementar siguiendo este mismo patrón.
 // Cada ejercicio está diseñado para ser:
 // 1. Específico al contenido de la lección
