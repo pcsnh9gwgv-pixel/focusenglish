@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { certificationCourses } from '@/content/courses/certifications/course-data'
 import { use } from 'react'
 
+// Configurar Edge Runtime para Cloudflare Pages
+export const runtime = 'edge'
+
 type Params = {
   level: string
   lessonId: string

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Configurar Edge Runtime para Cloudflare Pages
+export const runtime = 'edge'
+
 export async function POST(request: NextRequest) {
   try {
     const { text, letter } = await request.json()

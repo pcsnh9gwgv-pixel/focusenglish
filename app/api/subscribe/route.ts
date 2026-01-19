@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
 
+// Configurar Edge Runtime para Cloudflare Pages
+export const runtime = 'edge'
+
 export async function POST(request: Request) {
   try {
     // Leer el body
